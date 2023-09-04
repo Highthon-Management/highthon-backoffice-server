@@ -45,6 +45,9 @@ dependencies {
 
     // cool sms
     implementation("net.nurigo:sdk:4.3.0")
+
+    // jwt
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,4 +1,4 @@
-package com.example.highthonbackofficeserver
+package com.example.highthon
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

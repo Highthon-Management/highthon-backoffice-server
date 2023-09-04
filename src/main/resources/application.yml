@@ -1,14 +1,22 @@
 spring:
+
+  # format
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+  # jdbc
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     url: ${DB_URL}
 
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    database: 1
 
+  # jpa
   jpa:
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
@@ -19,9 +27,17 @@ spring:
         use_sql_comments: true
     open-in-view: false
 
+# server
 server:
   port: ${SERVER_PORT:8080}
 
+# logging
 logging:
   level:
     root: info
+
+# SMS
+sms:
+  api_key: ${API_KEY}
+  api_secret: ${API_SECRET}
+  sender: ${SENDER}

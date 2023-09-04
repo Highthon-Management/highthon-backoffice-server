@@ -4,6 +4,8 @@ import com.example.highthon.domain.auth.presentation.dto.CertificateNumberReques
 import net.nurigo.sdk.message.response.SingleMessageSentResponse
 
 interface SMSService {
+
     fun sendCheckNumber(phoneNumber: String): SingleMessageSentResponse?
+
     fun certificateNumber(req:CertificateNumberRequest): Boolean
 }

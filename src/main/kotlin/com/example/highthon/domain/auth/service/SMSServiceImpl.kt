@@ -2,6 +2,8 @@ package com.example.highthon.domain.auth.service
 
 import com.example.highthon.domain.auth.entity.Certification
 import com.example.highthon.domain.auth.presentation.dto.CertificateNumberRequest
+import com.example.highthon.domain.auth.exception.AlreadyPostedMessageException
+import com.example.highthon.domain.auth.exception.MessageNotSentYetException
 import com.example.highthon.domain.auth.repository.CertificationRepository
 import com.example.highthon.global.config.sms.SMSProperty
 import net.nurigo.sdk.NurigoApp.initialize
@@ -25,7 +27,7 @@ class SMSServiceImpl(
     val messageService: DefaultMessageService = initialize(property.apiKey, property.apiSecret, "https://api.coolsms.co.kr")
     override fun sendCheckNumber(phoneNumber: String): SingleMessageSentResponse? {
 
-        if (certificationRepository.existsById(phoneNumber)) throw RuntimeException("custom exception")
+        if (certificationRepository.existsById(phoneNumber)) throw AlreadyPostedMessageException
 
         val ran = Random().nextInt(1000000)
 
@@ -44,7 +46,7 @@ class SMSServiceImpl(
 
     override fun certificateNumber(req: CertificateNumberRequest): Boolean {
         val redisEntity = certificationRepository.findByIdOrNull(req.phoneNumber!!)
-            ?: throw RuntimeException("custom exception 2")
+            ?: throw MessageNotSentYetException
 
         return redisEntity.certificationNumber == req.number!!
     }

@@ -41,3 +41,8 @@ sms:
   api_key: ${API_KEY}
   api_secret: ${API_SECRET}
   sender: ${SENDER}
+
+jwt:
+  secret-key: ${JWT_SECRET}
+  access-exp: ${ACCESS_EXP}
+  refresh-exp: ${REFRESH_EXP}

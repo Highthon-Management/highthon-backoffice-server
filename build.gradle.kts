@@ -20,19 +20,31 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // db
+    runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+
+    // orm
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // security
     implementation("org.springframework.boot:spring-boot-starter-security")
+
+    // validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // web
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    runtimeOnly("com.mysql:mysql-connector-j")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
-    testImplementation("org.springframework.security:spring-security-test")
+
+    // cool sms
+    implementation("net.nurigo:sdk:4.3.0")
 }
 
 tasks.withType<KotlinCompile> {

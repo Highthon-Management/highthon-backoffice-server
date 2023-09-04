@@ -1,5 +1,9 @@
 package com.example.highthon.global.config.security
 
+import com.example.highthon.global.config.error.handler.ExceptionHandlerFilter
+import com.example.highthon.global.config.filter.FilterConfig
+import com.example.highthon.global.config.jwt.JwtTokenResolver
+import com.example.highthon.global.config.jwt.TokenProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -11,6 +15,9 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
+    private val tokenProvider: TokenProvider,
+    private val exceptionHandlerFilter: ExceptionHandlerFilter,
+    private val tokenResolver: JwtTokenResolver
 ) {
 
     @Bean
@@ -28,9 +35,11 @@ class SecurityConfig(
             .and()
             .authorizeRequests()
 
-            .antMatchers().permitAll()
+            .antMatchers("*").permitAll()
             .anyRequest().permitAll()
+            .and()
 
+            .apply(FilterConfig(tokenProvider, tokenResolver, exceptionHandlerFilter))
             .and().build()
     }
 

@@ -11,5 +11,5 @@ data class Certification(
     var requester: String,
 
     @Indexed
-    var certificationNumber: Int
+    var number: Int
 )

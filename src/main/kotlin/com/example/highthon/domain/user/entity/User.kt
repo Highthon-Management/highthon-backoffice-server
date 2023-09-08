@@ -51,8 +51,8 @@ class User(
     var password: String = password
         protected set
 
-    @Min(1, message = "학년은 1이상 이여야 합니다.")
-    @Max(3, message = "학년은 3하 이여야 합니다.")
+    @Min(1)
+    @Max(3)
     @Column(name = "grade", nullable = false)
     var grade: Int = grade
         protected set

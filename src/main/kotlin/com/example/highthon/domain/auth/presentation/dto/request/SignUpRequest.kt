@@ -1,4 +1,4 @@
-package com.example.highthon.domain.auth.presentation.dto
+package com.example.highthon.domain.auth.presentation.dto.request
 
 import com.example.highthon.domain.user.entity.type.Part
 import javax.validation.constraints.Max
@@ -19,6 +19,9 @@ data class SignUpRequest(
         message = "전화번호는 숫자만 넣어야 합니다. (ex)01012345678"
     )
     val phoneNumber: String?,
+
+    @field:NotNull(message = "null이 될 수 없습니다.")
+    val number: String?,
 
     @field:NotNull(message = "null이 될 수 없습니다.")
     @field:Size(min = 3, max = 15)

@@ -1,9 +1,9 @@
 package com.example.highthon.domain.auth.service
 
 import com.example.highthon.domain.auth.entity.Certification
-import com.example.highthon.domain.auth.presentation.dto.CertificateNumberRequest
 import com.example.highthon.domain.auth.exception.AlreadyPostedMessageException
 import com.example.highthon.domain.auth.exception.MessageNotSentYetException
+import com.example.highthon.domain.auth.presentation.dto.CertificateNumberRequest
 import com.example.highthon.domain.auth.repository.CertificationRepository
 import com.example.highthon.global.config.sms.SMSProperty
 import net.nurigo.sdk.NurigoApp.initialize
@@ -31,10 +31,20 @@ class SMSServiceImpl(
 
         val ran = Random().nextInt(1000000)
 
+//        val variables = mutableMapOf<String, String>()
+//        variables[phoneNumber] = ran.toString()
+//
+//        val kakaoOption = KakaoOption(
+//            pfId = "pfId 입력",
+//            templateId = "templateId 입력",
+//            disableSms = false,
+//            variables = variables
+//        )
+
         val message = Message(
             from = property.sender,
             to = phoneNumber,
-            text = "\n[Highthon 휴대폰 인증]\n하이톤 회원가입 인증번호 $ran 입니다. \"타인 노출 절대 금지\"",
+            text = "\n[Highthon 휴대폰 인증]\n하이톤 회원가입 인증번호 $ran 입니다.",
             type = MessageType.SMS,
             country = "+82"
         )
@@ -48,6 +58,6 @@ class SMSServiceImpl(
         val redisEntity = certificationRepository.findByIdOrNull(req.phoneNumber!!)
             ?: throw MessageNotSentYetException
 
-        return redisEntity.certificationNumber == req.number!!
+        return redisEntity.number == req.number!!
     }
 }

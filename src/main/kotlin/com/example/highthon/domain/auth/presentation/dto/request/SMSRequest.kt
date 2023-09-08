@@ -1,4 +1,4 @@
-package com.example.highthon.domain.auth.presentation.dto
+package com.example.highthon.domain.auth.presentation.dto.request
 
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern

@@ -1,10 +1,9 @@
 package com.example.highthon.domain.auth.presentation
 
-import com.example.highthon.domain.auth.presentation.dto.SignUpRequest
-import com.example.highthon.domain.auth.presentation.dto.CertificateNumberRequest
-import com.example.highthon.domain.auth.presentation.dto.LoginRequest
-import com.example.highthon.domain.auth.presentation.dto.SMSRequest
-import com.example.highthon.domain.auth.presentation.dto.TokenResponse
+import com.example.highthon.domain.auth.presentation.dto.request.CertificateNumberRequest
+import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
+import com.example.highthon.domain.auth.presentation.dto.request.SMSRequest
+import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.service.AuthService
 import com.example.highthon.domain.auth.service.SMSService
 import net.nurigo.sdk.message.response.SingleMessageSentResponse

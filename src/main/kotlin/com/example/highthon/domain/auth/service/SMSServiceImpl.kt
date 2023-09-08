@@ -3,7 +3,7 @@ package com.example.highthon.domain.auth.service
 import com.example.highthon.domain.auth.entity.Certification
 import com.example.highthon.domain.auth.exception.AlreadyPostedMessageException
 import com.example.highthon.domain.auth.exception.MessageNotSentYetException
-import com.example.highthon.domain.auth.presentation.dto.CertificateNumberRequest
+import com.example.highthon.domain.auth.presentation.dto.request.CertificateNumberRequest
 import com.example.highthon.domain.auth.repository.CertificationRepository
 import com.example.highthon.global.config.sms.SMSProperty
 import net.nurigo.sdk.NurigoApp.initialize

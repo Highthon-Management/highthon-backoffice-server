@@ -1,7 +1,7 @@
 package com.example.highthon.domain.auth.service
 
-import com.example.highthon.domain.auth.presentation.dto.LoginRequest
-import com.example.highthon.domain.auth.presentation.dto.TokenResponse
+import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
+import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 
 interface AuthService {
 

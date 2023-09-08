@@ -1,4 +1,4 @@
-package com.example.highthon.domain.auth.presentation.dto
+package com.example.highthon.domain.auth.presentation.dto.request
 
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min

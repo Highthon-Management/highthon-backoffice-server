@@ -2,6 +2,7 @@ package com.example.highthon.domain.user.entity
 
 import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.user.entity.type.Role
+import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
 import org.hibernate.annotations.DynamicUpdate
 import java.util.*
 import javax.persistence.*
@@ -61,4 +62,13 @@ class User(
     @Enumerated(EnumType.STRING)
     var role: Role = role
         protected set
+
+    fun toResponse() = UserProfileResponse(
+        this.id,
+        this.name,
+        this.grade,
+        this.part,
+        this.phoneNumber,
+        this.school
+    )
 }

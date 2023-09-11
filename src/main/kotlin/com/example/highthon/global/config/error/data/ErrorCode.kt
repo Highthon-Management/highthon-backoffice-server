@@ -24,6 +24,7 @@ enum class ErrorCode(
     ALREADY_POSTED_MESSAGE(HttpStatus.CONFLICT, "이미 문자 요청을 보냈습니다."),
     ALREADY_SIGN_UP(HttpStatus.CONFLICT, "이미 가입한 전화번호 입니다."),
     ALREADY_APPLIED(HttpStatus.CONFLICT, "이미 지원했습니다."),
+    ALREADY_CANCELED_APPLY(HttpStatus.CONFLICT, "이미 취소했습니다."),
     MESSAGE_NOT_SENT_YET(HttpStatus.CONFLICT, "아직 문자가 발송되지 않았습니다."),
 
     // 500

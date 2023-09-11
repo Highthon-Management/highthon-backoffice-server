@@ -2,15 +2,19 @@ package com.example.highthon.domain.apply.entity
 
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyResponse
 import com.example.highthon.domain.user.entity.User
+import org.hibernate.annotations.DynamicUpdate
 import java.util.*
 import javax.persistence.*
 
 @Entity(name = "apply")
+@DynamicUpdate
 class Apply(
     id: UUID,
     motivation: String,
     part: Part,
-    github: String?
+    github: String?,
+    isCanceled: Boolean? = null,
+    reason: String? = null
 ) {
 
     @Id @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
@@ -30,6 +34,13 @@ class Apply(
     var github: String? = github
         protected set
 
+    @Column(name = "is_canceled", columnDefinition = "BIT", nullable = false)
+    var isCanceled: Boolean = isCanceled ?: false
+        protected set
+
+    @Column(name = "reason", columnDefinition = "VARCHAR(1000)")
+    var reason: String? = reason
+        protected set
 
     fun toResponse(user: User) = ApplyResponse(
         id = this.id,

@@ -7,6 +7,7 @@ import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyResponse
 import com.example.highthon.domain.apply.repository.ApplyRepository
 import com.example.highthon.global.common.facade.UserFacade
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -49,5 +50,15 @@ class ApplyServiceImpl(
         ))
 
         return apply.toResponse(user)
+    }
+
+    @Transactional
+    override fun cancel() {
+
+        val user = userFacade.getCurrentUser()
+
+        if (!applyRepository.existsById(user.id)) throw ApplyNotFoundException
+
+        applyRepository.deleteById(user.id)
     }
 }

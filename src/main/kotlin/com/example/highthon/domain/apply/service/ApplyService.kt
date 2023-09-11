@@ -9,5 +9,5 @@ interface ApplyService {
 
     fun edit(req: ApplyRequest): ApplyResponse
 
-    fun cancel()
+    fun cancel(reason: String)
 }

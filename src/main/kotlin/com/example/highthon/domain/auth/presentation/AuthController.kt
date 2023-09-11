@@ -1,6 +1,7 @@
 package com.example.highthon.domain.auth.presentation
 
-import com.example.highthon.domain.auth.presentation.dto.request.CertificateNumberRequest
+import com.example.highthon.domain.auth.entity.type.NumberType
+import com.example.highthon.domain.auth.presentation.dto.request.CheckNumberRequest
 import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
 import com.example.highthon.domain.auth.presentation.dto.request.SMSRequest
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
@@ -30,17 +31,13 @@ class AuthController(
     fun sendMessage(
         @RequestBody @Valid
         req: SMSRequest
-    ): SingleMessageSentResponse? {
-        return smsService.sendCheckNumber(req.phoneNumber!!)
-    }
+    ): SingleMessageSentResponse? = smsService.sendSignUpMessage(req.phoneNumber!!)
 
     @GetMapping("/sms/check")
-    fun certificateNumber(
+    fun checkNumber(
         @RequestBody @Valid
-        req: CertificateNumberRequest
-    ): Boolean {
-        return smsService.certificateNumber(req)
-    }
+        req: CheckNumberRequest
+    ): Boolean = smsService.checkNumber(req, NumberType.SIGN_UP)
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,4 +45,17 @@ class AuthController(
         @RequestBody @Valid
         req: LoginRequest
     ): TokenResponse = authService.login(req)
+
+    @PostMapping("/sms/edit")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    fun sendMessageForEdit(
+        @RequestBody @Valid
+        req: SMSRequest
+    ): SingleMessageSentResponse? = smsService.sendEditMessage(req.phoneNumber!!)
+
+    @GetMapping("/sms/edit/check")
+    fun checkEditNumber(
+        @RequestBody @Valid
+        req: CheckNumberRequest
+    ): Boolean = smsService.checkNumber(req, NumberType.CHANGE)
 }

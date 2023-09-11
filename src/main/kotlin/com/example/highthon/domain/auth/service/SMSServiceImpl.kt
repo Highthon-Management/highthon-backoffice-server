@@ -1,10 +1,12 @@
 package com.example.highthon.domain.auth.service
 
 import com.example.highthon.domain.auth.entity.Certification
-import com.example.highthon.domain.auth.exception.AlreadyPostedMessageException
-import com.example.highthon.domain.auth.exception.MessageNotSentYetException
-import com.example.highthon.domain.auth.presentation.dto.request.CertificateNumberRequest
+import com.example.highthon.domain.auth.entity.type.NumberType
+import com.example.highthon.domain.auth.exception.*
+import com.example.highthon.domain.auth.presentation.dto.request.CheckNumberRequest
 import com.example.highthon.domain.auth.repository.CertificationRepository
+import com.example.highthon.domain.user.repository.UserRepository
+import com.example.highthon.global.common.facade.UserFacade
 import com.example.highthon.global.config.sms.SMSProperty
 import net.nurigo.sdk.NurigoApp.initialize
 import net.nurigo.sdk.message.model.Message
@@ -21,43 +23,65 @@ import java.util.*
 @Transactional(readOnly = true)
 class SMSServiceImpl(
     private val property: SMSProperty,
-    private val certificationRepository: CertificationRepository
+    private val certificationRepository: CertificationRepository,
+    private val userFacade: UserFacade,
+    private val userRepository: UserRepository
 ): SMSService {
 
     val messageService: DefaultMessageService = initialize(property.apiKey, property.apiSecret, "https://api.coolsms.co.kr")
-    override fun sendCheckNumber(phoneNumber: String): SingleMessageSentResponse? {
+
+    override fun checkNumber(req: CheckNumberRequest,  type: NumberType): Boolean {
+
+        val redisEntity = certificationRepository.findByIdOrNull(req.phoneNumber!!)
+            ?: throw MessageNotSentYetException
+
+        if (redisEntity.type != type) throw MessageTypeNotMatchedException
+
+        return redisEntity.number == req.number!!
+    }
+
+    @Transactional
+    override fun sendSignUpMessage(phoneNumber: String): SingleMessageSentResponse? = sendMessage(phoneNumber, NumberType.SIGN_UP)
+
+    private fun sendMessage(phoneNumber: String, type: NumberType): SingleMessageSentResponse? {
+
+        if (userRepository.existsByPhoneNumber(phoneNumber)) throw AlreadySignUpException
 
         if (certificationRepository.existsById(phoneNumber)) throw AlreadyPostedMessageException
 
         val ran = Random().nextInt(1000000)
 
-//        val variables = mutableMapOf<String, String>()
-//        variables[phoneNumber] = ran.toString()
-//
-//        val kakaoOption = KakaoOption(
-//            pfId = "pfId 입력",
-//            templateId = "templateId 입력",
-//            disableSms = false,
-//            variables = variables
-//        )
+        /*
+        val variables = mutableMapOf<String, String>()
+        variables[phoneNumber] = ran.toString()
+
+        val kakaoOption = KakaoOption(
+        pfId = "pfId 입력",
+        templateId = "templateId 입력",
+        disableSms = false,
+        variables = variables
+        )
+        */
 
         val message = Message(
             from = property.sender,
             to = phoneNumber,
-            text = "\n[Highthon 휴대폰 인증]\n하이톤 회원가입 인증번호 $ran 입니다.",
+            text = "\n[Highthon 휴대폰 인증]\n하이톤 ${if (type == NumberType.SIGN_UP) "회원가입" else "전화번호 변경"} 인증번호 $ran 입니다.",
             type = MessageType.SMS,
             country = "+82"
         )
 
-        certificationRepository.save(Certification(phoneNumber, ran))
+        certificationRepository.save(Certification(phoneNumber, ran, type))
 
         return messageService.sendOne(SingleMessageSendingRequest(message))
     }
 
-    override fun certificateNumber(req: CertificateNumberRequest): Boolean {
-        val redisEntity = certificationRepository.findByIdOrNull(req.phoneNumber!!)
-            ?: throw MessageNotSentYetException
+    @Transactional
+    override fun sendEditMessage(phoneNumber: String): SingleMessageSentResponse? {
 
-        return redisEntity.number == req.number!!
+        if (userFacade.getCurrentUser().phoneNumber != phoneNumber) throw PhoneNumberMatchedException
+
+        return sendMessage(phoneNumber, NumberType.CHANGE)
     }
+
 }

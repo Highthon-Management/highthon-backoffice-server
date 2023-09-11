@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository
 interface UserRepository: JpaRepository<User, Long?> {
 
     fun findByPhoneNumber(phoneNumber: String): User?
+
+    fun existsByPhoneNumber(phoneNumber: String): Boolean
 }

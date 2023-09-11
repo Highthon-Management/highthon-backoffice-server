@@ -1,11 +1,14 @@
 package com.example.highthon.domain.auth.service
 
-import com.example.highthon.domain.auth.presentation.dto.CertificateNumberRequest
+import com.example.highthon.domain.auth.entity.type.NumberType
+import com.example.highthon.domain.auth.presentation.dto.request.CheckNumberRequest
 import net.nurigo.sdk.message.response.SingleMessageSentResponse
 
 interface SMSService {
 
-    fun sendCheckNumber(phoneNumber: String): SingleMessageSentResponse?
+    fun checkNumber(req: CheckNumberRequest, type: NumberType): Boolean
 
-    fun certificateNumber(req:CertificateNumberRequest): Boolean
+    fun sendSignUpMessage(phoneNumber: String): SingleMessageSentResponse?
+
+    fun sendEditMessage(phoneNumber: String): SingleMessageSentResponse?
 }

@@ -1,7 +1,7 @@
 package com.example.highthon.global.config.jwt
 
 import com.example.highthon.domain.auth.entity.RefreshToken
-import com.example.highthon.domain.auth.presentation.dto.TokenResponse
+import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.RefreshTokenRepository
 import com.example.highthon.global.config.error.exception.ExpiredTokenException
 import com.example.highthon.global.config.error.exception.InvalidTokenException

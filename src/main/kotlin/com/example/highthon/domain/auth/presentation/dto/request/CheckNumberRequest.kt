@@ -1,11 +1,11 @@
-package com.example.highthon.domain.auth.presentation.dto
+package com.example.highthon.domain.auth.presentation.dto.request
 
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
-data class CertificateNumberRequest(
+data class CheckNumberRequest(
 
     @field:NotNull(message = "null이 될 수 없습니다.")
     @field:Pattern(

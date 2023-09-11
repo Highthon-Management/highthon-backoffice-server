@@ -5,6 +5,7 @@ import com.example.highthon.domain.apply.presentaion.dto.response.ApplyResponse
 import com.example.highthon.domain.apply.service.ApplyService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -32,4 +33,9 @@ class ApplyController(
         @RequestBody @Valid
         req: ApplyRequest
     ): ApplyResponse = applyService.edit(req)
+
+    @DeleteMapping
+    fun cancel() {
+        applyService.cancel()
+    }
 }

@@ -2,6 +2,7 @@ package com.example.highthon.domain.apply.presentaion.dto.request
 
 import com.example.highthon.domain.apply.entity.Part
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 data class ApplyRequest(
@@ -9,7 +10,7 @@ data class ApplyRequest(
     @field:NotBlank(message = "null이 될 수 없습니다.")
     val motivation: String?,
 
-    @field:NotBlank(message = "null이 될 수 없습니다.")
+    @field:NotNull(message = "null이 될 수 없습니다.")
     val part: Part?,
 
     @field:Pattern(

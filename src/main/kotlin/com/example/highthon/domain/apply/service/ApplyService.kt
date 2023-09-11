@@ -7,4 +7,5 @@ interface ApplyService {
 
     fun apply(req: ApplyRequest): ApplyResponse
 
+    fun edit(req: ApplyRequest): ApplyResponse
 }

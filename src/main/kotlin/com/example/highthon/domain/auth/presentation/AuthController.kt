@@ -26,6 +26,7 @@ class AuthController(
 ) {
 
     @PostMapping("/sms")
+    @ResponseStatus(HttpStatus.CREATED)
     fun sendMessage(
         @RequestBody @Valid
         req: SMSRequest

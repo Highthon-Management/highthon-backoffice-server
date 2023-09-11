@@ -24,5 +24,5 @@ class ApplyController(
     fun apply(
         @RequestBody @Valid
         req: ApplyRequest
-    ): ApplyResponse = applyService.applyMe(req)
+    ): ApplyResponse = applyService.apply(req)
 }

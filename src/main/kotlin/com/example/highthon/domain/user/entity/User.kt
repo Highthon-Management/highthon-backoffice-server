@@ -9,23 +9,23 @@ import javax.persistence.*
 @Entity(name = "user")
 @DynamicUpdate
 class User(
-    pk: Long? = null,
-    id: UUID? = null,
+    id: Long? = null,
+    pk: UUID? = null,
     name: String,
     phoneNumber: String,
-    school: String,
     password: String,
     grade: Int,
+    school: String,
     role: Role
 ) {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pk", nullable = false)
-    var pk: Long? = pk
+    @Column(name = "id")
+    var id: Long? = id
         protected set
 
-    @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false, unique = true)
-    var id: UUID = id ?: UUID.randomUUID()
+    @Column(name = "pk", columnDefinition = "BINARY(16)", nullable = false, unique = true)
+    var pk: UUID? = pk ?: UUID.randomUUID()
         protected set
 
     @Column(name = "name",  columnDefinition = "CHAR(4)", nullable = false)
@@ -53,7 +53,7 @@ class User(
         protected set
 
     fun toResponse() = UserProfileResponse(
-        this.id,
+        this.pk!!,
         this.name,
         this.grade,
         this.phoneNumber,

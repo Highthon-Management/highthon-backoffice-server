@@ -48,6 +48,10 @@ dependencies {
 
     // jwt
     implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+    // query dsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0")
+    implementation("com.querydsl:querydsl-apt:5.0.0")
 }
 
 tasks.withType<KotlinCompile> {

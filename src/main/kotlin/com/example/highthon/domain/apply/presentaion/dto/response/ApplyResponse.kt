@@ -11,5 +11,7 @@ data class ApplyResponse (
     val school: String,
     val motivation: String,
     val part: Part,
-    val githubLink: String?
+    val githubLink: String?,
+    val isCanceled: Boolean,
+    val reason: String?
 )

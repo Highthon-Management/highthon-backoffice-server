@@ -1,5 +1,6 @@
 package com.example.highthon.domain.user.entity
 
+import com.example.highthon.domain.apply.entity.Part
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
 import org.hibernate.annotations.DynamicUpdate
@@ -9,23 +10,18 @@ import javax.persistence.*
 @Entity(name = "user")
 @DynamicUpdate
 class User(
-    id: Long? = null,
-    pk: UUID? = null,
+    id: UUID? = null,
     name: String,
     phoneNumber: String,
     password: String,
-    grade: Int,
     school: String,
+    part: Part,
     role: Role
 ) {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    var id: Long? = id
-        protected set
-
-    @Column(name = "pk", columnDefinition = "BINARY(16)", nullable = false, unique = true)
-    var pk: UUID? = pk ?: UUID.randomUUID()
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false, unique = true)
+    var id: UUID? = id
         protected set
 
     @Column(name = "name",  columnDefinition = "CHAR(4)", nullable = false)
@@ -36,15 +32,17 @@ class User(
     var phoneNumber: String = phoneNumber
         protected set
 
-    @Column(name = "school", columnDefinition = "VARCHAR(15)", nullable = false)
-    var school: String = school
-
     @Column(name = "password", columnDefinition = "CHAR(60)", nullable = false)
     var password: String = password
         protected set
 
-    @Column(name = "grade", nullable = false)
-    var grade: Int = grade
+    @Column(name = "school", columnDefinition = "VARCHAR(15)", nullable = false)
+    var school: String = school
+        protected set
+
+    @Column(name = "part", columnDefinition = "VARCHAR(9)", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var part: Part = part
         protected set
 
     @Column(name = "role", columnDefinition = "VARCHAR(11)", nullable = false)
@@ -53,9 +51,8 @@ class User(
         protected set
 
     fun toResponse() = UserProfileResponse(
-        this.pk!!,
+        this.id!!,
         this.name,
-        this.grade,
         this.phoneNumber,
         this.school
     )

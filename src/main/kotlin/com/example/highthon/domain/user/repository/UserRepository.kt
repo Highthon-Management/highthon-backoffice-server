@@ -6,11 +6,9 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface UserRepository: JpaRepository<User, Long?> {
+interface UserRepository: JpaRepository<User, UUID?> {
 
     fun findByPhoneNumber(phoneNumber: String): User?
 
     fun existsByPhoneNumber(phoneNumber: String): Boolean
-
-    fun findByPk(pk: UUID): User?
 }

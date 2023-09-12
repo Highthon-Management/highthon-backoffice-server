@@ -1,5 +1,6 @@
 package com.example.highthon.domain.user.presentation.dto.request
 
+import com.example.highthon.domain.apply.entity.Part
 import javax.validation.constraints.*
 
 data class EditProfileRequest(
@@ -21,6 +22,9 @@ data class EditProfileRequest(
         message = "비밀번호는 영문 대소문자 4자 이상, 숫자 4자 이상, 특수문자 1자 이상이며 총 15자 이하여야 합니다."
     )
     val password: String?,
+
+    @field:NotNull(message = "null이 될 수 없습니다.")
+    val part: Part,
 
     @field:NotNull(message = "null이 될 수 없습니다.")
     @field:Min(1, message = "학년은 1학년부터 입니다.")

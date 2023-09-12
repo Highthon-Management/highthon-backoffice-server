@@ -1,5 +1,6 @@
 package com.example.highthon.domain.user.service
 
+import com.example.highthon.domain.apply.entity.Part
 import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.presentation.dto.request.EditProfileRequest
 import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
@@ -22,13 +23,13 @@ class UserServiceImpl(
         val user = userFacade.getCurrentUser()
 
         val newUser = userRepository.save(User(
-            pk = user.pk,
-            name = req.name!!,
-            phoneNumber = user.phoneNumber,
-            password = req.password!!,
-            grade = req.grade!!,
-            school = req.school!!,
-            role = user.role
+            user.id,
+            req.name!!,
+            user.phoneNumber,
+            req.password!!,
+            req.school!!,
+            req.part,
+            user.role
         ))
 
         return newUser.toResponse()

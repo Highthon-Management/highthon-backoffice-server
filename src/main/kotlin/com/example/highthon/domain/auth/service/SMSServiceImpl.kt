@@ -79,7 +79,7 @@ class SMSServiceImpl(
     @Transactional
     override fun sendEditMessage(phoneNumber: String): SingleMessageSentResponse? {
 
-        if (userFacade.getCurrentUser().phoneNumber != phoneNumber) throw PhoneNumberMatchedException
+        if (userFacade.getCurrentUser().phoneNumber == phoneNumber) throw PhoneNumberMatchedException
 
         return sendMessage(phoneNumber, NumberType.CHANGE)
     }

@@ -16,6 +16,9 @@ enum class ErrorCode(
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
 
+    //403
+    PERMISSION_DENIED(HttpStatus.FORBIDDEN, "권한이 거부되었습니다."),
+
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
     APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "신청을 한 적이 없습니다."),

@@ -50,6 +50,9 @@ class Apply(
         school = user.school,
         motivation = this.motivation,
         part = this.part,
-        githubLink = this.github
+        githubLink = this.github,
+        isCanceled = this.isCanceled,
+        reason = this.reason
     )
+
 }

@@ -1,7 +1,7 @@
 package com.example.highthon.domain.apply.repository
 
 import com.example.highthon.domain.apply.entity.Apply
-import com.example.highthon.domain.apply.entity.Part
+import com.example.highthon.domain.user.entity.type.Part
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository

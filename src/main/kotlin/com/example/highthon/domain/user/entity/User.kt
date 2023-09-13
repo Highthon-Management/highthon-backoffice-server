@@ -20,7 +20,7 @@ class User(
 ) {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false, unique = true)
+    @Column(name = "id", columnDefinition = "BINARY(16)")
     var id: UUID? = id
         protected set
 

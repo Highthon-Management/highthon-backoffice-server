@@ -50,7 +50,7 @@ class ApplyController(
     @GetMapping("/list")
     fun getApplyList(
         @RequestParam("idx") idx: Int = 0,
-        @RequestParam("size") size: Int = 0,
+        @RequestParam("size") size: Int = 5,
         @RequestParam("part") part: Part
     ): Page<ApplyListResponse> = applyService.getList(idx, size, part)
 

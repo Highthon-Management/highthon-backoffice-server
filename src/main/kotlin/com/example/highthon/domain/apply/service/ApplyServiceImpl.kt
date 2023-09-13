@@ -14,6 +14,7 @@ import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.global.common.facade.UserFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -39,8 +40,6 @@ class ApplyServiceImpl(
             req.motivation!!,
             req.githubLink
         ))
-
-        println(apply.id)
 
         return apply.toResponse()
     }
@@ -104,7 +103,8 @@ class ApplyServiceImpl(
             part,
             PageRequest.of(
                 idx,
-                size
+                size,
+                Sort.by(Sort.Direction.DESC, "createdAt")
             )
         ).map {
             it.toMinimumResponse()

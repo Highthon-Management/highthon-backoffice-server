@@ -4,6 +4,7 @@ import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailRes
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
 import com.example.highthon.domain.user.entity.User
 import org.hibernate.annotations.DynamicUpdate
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -42,6 +43,10 @@ class Apply(
 
     @Column(name = "reason", columnDefinition = "VARCHAR(1000)")
     var reason: String? = reason
+        protected set
+
+    @Column(name = "created_at", nullable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now()
         protected set
 
     fun toResponse() = ApplyDetailResponse(

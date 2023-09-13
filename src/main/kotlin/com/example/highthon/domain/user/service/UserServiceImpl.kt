@@ -1,6 +1,5 @@
 package com.example.highthon.domain.user.service
 
-import com.example.highthon.domain.apply.entity.Part
 import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.presentation.dto.request.EditProfileRequest
 import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse

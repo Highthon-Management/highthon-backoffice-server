@@ -11,7 +11,6 @@ import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailRes
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
 import com.example.highthon.domain.apply.repository.ApplyRepository
 import com.example.highthon.domain.user.entity.type.Role
-import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.common.facade.UserFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -24,8 +23,7 @@ import java.util.*
 @Transactional(readOnly = true)
 class ApplyServiceImpl(
     private val applyRepository: ApplyRepository,
-    private val userFacade: UserFacade,
-    private val userRepository: UserRepository
+    private val userFacade: UserFacade
 ): ApplyService {
 
     @Transactional
@@ -36,10 +34,13 @@ class ApplyServiceImpl(
         if (applyRepository.existsById(user.id!!)) throw AlreadyAppliedException
 
         val apply = applyRepository.save(Apply(
+            null,
             user,
             req.motivation!!,
             req.githubLink
         ))
+
+        println(apply.id)
 
         return apply.toResponse()
     }
@@ -52,6 +53,7 @@ class ApplyServiceImpl(
         if (!applyRepository.existsById(user.id!!)) throw ApplyNotFoundException
 
         val apply = applyRepository.save(Apply(
+            user.id!!,
             user,
             req.motivation!!,
             req.githubLink
@@ -71,6 +73,7 @@ class ApplyServiceImpl(
         if (apply.isCanceled) throw AlreadyCanceledApplyException
 
         applyRepository.save(Apply(
+            user.id!!,
             user,
             apply.motivation,
             apply.github,

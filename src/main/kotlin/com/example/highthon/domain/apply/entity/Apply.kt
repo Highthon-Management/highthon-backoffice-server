@@ -10,6 +10,7 @@ import javax.persistence.*
 @Entity(name = "apply")
 @DynamicUpdate
 class Apply(
+    id: UUID? = null,
     user: User,
     motivation: String,
     github: String?,
@@ -19,11 +20,10 @@ class Apply(
 
     @Id
     @Column(name = "id")
-    var id: UUID = user.id!!
+    var id: UUID? = id
         protected set
 
-    @OneToOne(mappedBy = "user_id")
-    @MapsId
+    @OneToOne(fetch = FetchType.LAZY) @MapsId
     @JoinColumn(name = "id", columnDefinition = "BINARY(16)")
     var user: User = user
         protected set
@@ -45,7 +45,7 @@ class Apply(
         protected set
 
     fun toResponse() = ApplyDetailResponse(
-        this.id,
+        this.id!!,
         this.user.name,
         this.user.phoneNumber,
         this.user.school,
@@ -55,7 +55,7 @@ class Apply(
     )
 
     fun toMinimumResponse() = ApplyListResponse(
-        this.id,
+        this.id!!,
         this.user.name,
         this.user.school,
         this.user.part

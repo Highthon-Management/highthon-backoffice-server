@@ -10,7 +10,7 @@ import javax.persistence.*
 
 @Entity(name = "apply")
 @DynamicUpdate
-class Apply(
+class Applicant(
     id: UUID? = null,
     user: User,
     motivation: String,
@@ -57,6 +57,8 @@ class Apply(
         this.motivation,
         this.user.part,
         this.github,
+        this.isCanceled,
+        this.reason
     )
 
     fun toMinimumResponse() = ApplyListResponse(

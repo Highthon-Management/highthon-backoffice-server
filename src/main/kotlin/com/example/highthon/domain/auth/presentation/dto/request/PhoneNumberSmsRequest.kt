@@ -3,7 +3,7 @@ package com.example.highthon.domain.auth.presentation.dto.request
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
-data class SMSRequest(
+data class PhoneNumberSmsRequest(
 
     @field:NotNull(message = "null이 될 수 없습니다.")
     @field:Pattern(

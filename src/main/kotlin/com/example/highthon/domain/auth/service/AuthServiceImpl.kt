@@ -28,6 +28,7 @@ class AuthServiceImpl(
     private val smsService: SmsService
 ): AuthService {
 
+    @Transactional
     override fun login(req: LoginRequest): TokenResponse {
 
         val user = userRepository.findByPhoneNumber(req.phoneNumber!!)
@@ -63,7 +64,7 @@ class AuthServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (smsService.passwordCheck(user, req.number!!)) throw NumberNotMatchedException
+        if (!smsService.passwordCheck(user, req.number!!)) throw NumberNotMatchedException
 
         qualificationRepository.deleteById(user.phoneNumber)
 

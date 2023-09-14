@@ -28,7 +28,7 @@ enum class ErrorCode(
     ALREADY_SIGN_UP(HttpStatus.CONFLICT, "이미 가입한 전화번호 입니다."),
     ALREADY_APPLIED(HttpStatus.CONFLICT, "이미 지원했습니다."),
     ALREADY_CANCELED_APPLY(HttpStatus.CONFLICT, "이미 취소했습니다."),
-    MESSAGE_NOT_SENT_YET(HttpStatus.CONFLICT, "아직 문자가 발송되지 않았습니다."),
+    MESSAGE_NOT_SENT_YET(HttpStatus.CONFLICT, "먼저 문자를 발송해주십시오."),
 
     // 500
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러"),

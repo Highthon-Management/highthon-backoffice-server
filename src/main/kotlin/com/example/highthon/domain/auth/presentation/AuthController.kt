@@ -1,8 +1,6 @@
 package com.example.highthon.domain.auth.presentation
 
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
-import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
+import com.example.highthon.domain.auth.presentation.dto.request.*
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.service.AuthService
 import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
@@ -36,4 +34,19 @@ class AuthController(
         @RequestBody @Valid
         req: ChangePasswordRequest
     ): UserProfileResponse = authService.changePassword(req)
+
+
+    @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun signup(@RequestBody request: SignUpRequest) {
+
+        val phoneNumber = request.phoneNumber ?: ""
+
+        authService.signup(request, phoneNumber, Integer.parseInt(request.number))
+    }
 }
+
+//    @PostMapping("/reissue")
+//    fun reissueToken(
+//        @RequestBody @Valid
+//    )

@@ -57,6 +57,8 @@ class Applicant(
         this.motivation,
         this.user.part,
         this.github,
+        this.isCanceled,
+        this.reason
     )
 
     fun toMinimumResponse() = ApplyListResponse(

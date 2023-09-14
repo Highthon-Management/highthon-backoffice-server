@@ -8,7 +8,7 @@ import javax.persistence.EnumType
 import javax.persistence.Enumerated
 
 @RedisHash(timeToLive = 300) // 5분
-data class Certification(
+data class Qualification(
 
     @Id
     var id: String,

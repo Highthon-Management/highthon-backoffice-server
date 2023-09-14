@@ -7,7 +7,7 @@ import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListRespo
 import org.springframework.data.domain.Page
 import java.util.UUID
 
-interface ApplyService {
+interface ApplicantService {
 
     fun apply(req: ApplyRequest): ApplyDetailResponse
 
@@ -17,5 +17,5 @@ interface ApplyService {
 
     fun getDetail(id: UUID): ApplyDetailResponse
 
-    fun getList(idx: Int, size: Int, part: Part): Page<ApplyListResponse>
+    fun getListByPart(idx: Int, size: Int, part: Part): Page<ApplyListResponse>
 }

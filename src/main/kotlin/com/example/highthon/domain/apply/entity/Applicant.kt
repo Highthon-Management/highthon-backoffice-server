@@ -10,7 +10,7 @@ import javax.persistence.*
 
 @Entity(name = "apply")
 @DynamicUpdate
-class Apply(
+class Applicant(
     id: UUID? = null,
     user: User,
     motivation: String,

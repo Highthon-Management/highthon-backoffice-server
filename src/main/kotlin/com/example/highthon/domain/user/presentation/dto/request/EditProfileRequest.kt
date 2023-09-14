@@ -1,6 +1,6 @@
 package com.example.highthon.domain.user.presentation.dto.request
 
-import com.example.highthon.domain.apply.entity.Part
+import com.example.highthon.domain.user.entity.type.Part
 import javax.validation.constraints.*
 
 data class EditProfileRequest(

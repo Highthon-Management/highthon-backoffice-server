@@ -1,6 +1,6 @@
 package com.example.highthon.domain.user.entity
 
-import com.example.highthon.domain.apply.entity.Part
+import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
 import org.hibernate.annotations.DynamicUpdate

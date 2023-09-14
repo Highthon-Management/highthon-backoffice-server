@@ -1,7 +1,7 @@
 package com.example.highthon.domain.apply.service
 
 import com.example.highthon.domain.apply.entity.Apply
-import com.example.highthon.domain.apply.entity.Part
+import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.apply.exception.AlreadyAppliedException
 import com.example.highthon.domain.apply.exception.AlreadyCanceledApplyException
 import com.example.highthon.domain.apply.exception.ApplyNotFoundException

@@ -1,4 +1,4 @@
-package com.example.highthon.domain.apply.entity
+package com.example.highthon.domain.user.entity.type
 
 enum class Part {
     BACK_END,

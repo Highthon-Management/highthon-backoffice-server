@@ -5,6 +5,7 @@ import com.example.highthon.domain.auth.entity.type.NumberType
 import com.example.highthon.domain.auth.exception.*
 import com.example.highthon.domain.auth.presentation.dto.request.*
 import com.example.highthon.domain.auth.repository.QualificationRepository
+import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.common.facade.UserFacade
 import com.example.highthon.global.config.sms.SMSProperty
@@ -111,8 +112,6 @@ class SmsServiceImpl(
 
     override fun phoneNumberCheck(phoneNumber: String, number: Int): Boolean {
 
-        userFacade.getCurrentUser()
-
         val qualification = qualificationRepository.findByIdOrNull(phoneNumber)
             ?: throw MessageNotSentYetException
 
@@ -121,9 +120,7 @@ class SmsServiceImpl(
         return qualification.number == number
     }
 
-    override fun passwordCheck(number: Int): Boolean {
-
-        val user = userFacade.getCurrentUser()
+    override fun passwordCheck(user: User, number: Int): Boolean {
 
         val qualification = qualificationRepository.findByIdOrNull(user.phoneNumber)
             ?: throw MessageNotSentYetException

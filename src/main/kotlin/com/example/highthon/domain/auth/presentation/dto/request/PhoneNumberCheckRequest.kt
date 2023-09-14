@@ -5,7 +5,7 @@ import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
-data class EditPhoneNumberRequest(
+data class PhoneNumberCheckRequest(
 
     @field:NotNull(message = "null이 될 수 없습니다.")
     @field:Pattern(

@@ -1,6 +1,6 @@
 package com.example.highthon.domain.apply.service
 
-import com.example.highthon.domain.apply.entity.Apply
+import com.example.highthon.domain.apply.entity.Applicant
 import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.apply.exception.AlreadyAppliedException
 import com.example.highthon.domain.apply.exception.AlreadyCanceledApplyException
@@ -9,7 +9,7 @@ import com.example.highthon.domain.apply.exception.PermissionDeniedException
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
-import com.example.highthon.domain.apply.repository.ApplyRepository
+import com.example.highthon.domain.apply.repository.ApplicantRepository
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.global.common.facade.UserFacade
 import org.springframework.data.domain.Page
@@ -22,26 +22,26 @@ import java.util.*
 
 @Service
 @Transactional(readOnly = true)
-class ApplyServiceImpl(
-    private val applyRepository: ApplyRepository,
+class ApplicantServiceImpl(
+    private val applicantRepository: ApplicantRepository,
     private val userFacade: UserFacade
-): ApplyService {
+): ApplicantService {
 
     @Transactional
     override fun apply(req: ApplyRequest): ApplyDetailResponse {
 
         val user = userFacade.getCurrentUser()
 
-        if (applyRepository.existsById(user.id!!)) throw AlreadyAppliedException
+        if (applicantRepository.existsById(user.id!!)) throw AlreadyAppliedException
 
-        val apply = applyRepository.save(Apply(
+        val applicant = applicantRepository.save(Applicant(
             null,
             user,
             req.motivation!!,
             req.githubLink
         ))
 
-        return apply.toResponse()
+        return applicant.toResponse()
     }
 
     @Transactional
@@ -49,16 +49,17 @@ class ApplyServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (!applyRepository.existsById(user.id!!)) throw ApplyNotFoundException
+        if (!applicantRepository.existsById(user.id!!)) throw ApplyNotFoundException
 
-        val apply = applyRepository.save(Apply(
+        val applicant = applicantRepository.save(Applicant(
             user.id!!,
             user,
             req.motivation!!,
-            req.githubLink
+            req.githubLink,
+            req.isCanceled
         ))
 
-        return apply.toResponse()
+        return applicant.toResponse()
     }
 
     @Transactional
@@ -66,12 +67,12 @@ class ApplyServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        val apply = applyRepository.findByIdOrNull(user.id!!)
+        val apply = applicantRepository.findByIdOrNull(user.id!!)
             ?: throw ApplyNotFoundException
 
         if (apply.isCanceled) throw AlreadyCanceledApplyException
 
-        applyRepository.save(Apply(
+        applicantRepository.save(Applicant(
             user.id!!,
             user,
             apply.motivation,
@@ -85,7 +86,7 @@ class ApplyServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        val apply = applyRepository.findByIdOrNull(id)
+        val apply = applicantRepository.findByIdOrNull(id)
             ?: throw ApplyNotFoundException
 
         if (user.role != Role.ADMIN && user.id!! != apply.id) throw PermissionDeniedException
@@ -93,13 +94,13 @@ class ApplyServiceImpl(
         return apply.toResponse()
     }
 
-    override fun getList(idx: Int, size: Int, part: Part): Page<ApplyListResponse> {
+    override fun getListByPart(idx: Int, size: Int, part: Part): Page<ApplyListResponse> {
 
         val user = userFacade.getCurrentUser()
 
         if (user.role != Role.ADMIN) throw PermissionDeniedException
 
-        return applyRepository.findAllByAndUserPart(
+        return applicantRepository.findAllByAndUserPart(
             part,
             PageRequest.of(
                 idx,

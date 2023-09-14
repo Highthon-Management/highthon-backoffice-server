@@ -1,6 +1,6 @@
 package com.example.highthon.domain.apply.repository
 
-import com.example.highthon.domain.apply.entity.Apply
+import com.example.highthon.domain.apply.entity.Applicant
 import com.example.highthon.domain.user.entity.type.Part
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface ApplyRepository: JpaRepository<Apply, UUID> {
+interface ApplicantRepository: JpaRepository<Applicant, UUID> {
 
-    fun findAllByAndUserPart(part: Part, pageable: Pageable): Page<Apply>
+    fun findAllByAndUserPart(part: Part, pageable: Pageable): Page<Applicant>
 }

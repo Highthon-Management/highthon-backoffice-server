@@ -5,13 +5,14 @@ import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
 import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
 import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
 import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
+import com.example.highthon.domain.auth.presentation.dto.request.SignUpRequest
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.entity.User
+import com.example.highthon.domain.user.entity.type.Part
+import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.exception.UserNotFoundException
-import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
 import com.example.highthon.domain.user.repository.UserRepository
-import com.example.highthon.global.common.facade.UserFacade
 import com.example.highthon.global.config.jwt.TokenProvider
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -38,9 +39,14 @@ class AuthServiceImpl(
 
         return tokenProvider.receiveToken(user.phoneNumber)
     }
+     override fun signup(request: SignUpRequest,phoneNumber: String, number: Int) {
+        val isVerificationCode = smsService.checkNumber(CheckNumberRequest(phoneNumber, number),NumberType.SIGN_UP)
 
     @Transactional
     override fun changePhoneNumber(req: ChangePhoneNumberRequest): UserProfileResponse {
+        if (!isVerificationCode) {
+            throw MessageTypeNotMatchedException
+        }
 
         val user = userFacade.getCurrentUser()
 
@@ -77,5 +83,15 @@ class AuthServiceImpl(
             user.part,
             user.role
         )).toResponse()
+        val user = User(
+            name = request.name?: "",
+            phoneNumber = request.phoneNumber?: "",
+            school = request.school?: "",
+            password = passwordEncoder.encode(request.password),
+            role = Role.USER,
+            part = Part.BACK_END
+        )
+        userRepository.save(user)
     }
+
 }

@@ -15,5 +15,5 @@ interface AuthService {
 
     fun changePassword(req: ChangePasswordRequest): UserProfileResponse
 
-    fun signup(request: SignUpRequest, phoneNumber: String, number: Int)
+    fun signup(request: SignUpRequest)
 }

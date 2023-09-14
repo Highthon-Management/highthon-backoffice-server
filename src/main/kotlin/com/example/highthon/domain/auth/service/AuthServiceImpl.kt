@@ -1,5 +1,6 @@
 package com.example.highthon.domain.auth.service
 
+import com.example.highthon.domain.auth.exception.MessageNotSentYetException
 import com.example.highthon.domain.auth.exception.NumberNotMatchedException
 import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
 import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
@@ -9,13 +10,13 @@ import com.example.highthon.domain.auth.presentation.dto.request.SignUpRequest
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.entity.User
-import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.exception.UserNotFoundException
 import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
 import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.common.facade.UserFacade
 import com.example.highthon.global.config.jwt.TokenProvider
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -82,17 +83,24 @@ class AuthServiceImpl(
         )).toResponse()
     }
 
-    override fun signup(request: SignUpRequest, phoneNumber: String, number: Int) {
+    @Transactional
+    override fun signup(request: SignUpRequest) {
 
-        val user = User(
-            name = request.name?: "",
-            phoneNumber = request.phoneNumber?: "",
-            school = request.school?: "",
-            password = passwordEncoder.encode(request.password),
+        val qualification =  qualificationRepository.findByIdOrNull(request.phoneNumber!!)
+            ?: throw MessageNotSentYetException
+
+        if (qualification.number != request.number) throw NumberNotMatchedException
+
+        userRepository.save(User(
+            name = request.name!!,
+            phoneNumber = request.phoneNumber,
+            school = request.school!!,
+            password = passwordEncoder.encode(request.password!!),
             role = Role.USER,
-            part = Part.BACK_END
-        )
-        userRepository.save(user)
+            part = request.part
+        ))
+
+        qualificationRepository.delete(qualification)
     }
 
 }

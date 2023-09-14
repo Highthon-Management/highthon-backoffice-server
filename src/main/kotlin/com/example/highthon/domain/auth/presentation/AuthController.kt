@@ -36,13 +36,13 @@ class AuthController(
     ): UserProfileResponse = authService.changePassword(req)
 
 
-    @PostMapping("/signup")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun signup(@RequestBody request: SignUpRequest) {
-
-        val phoneNumber = request.phoneNumber ?: ""
-
-        authService.signup(request, phoneNumber, Integer.parseInt(request.number))
+    fun signup(
+        @RequestBody @Valid
+        request: SignUpRequest
+    ) {
+        authService.signup(request)
     }
 }
 

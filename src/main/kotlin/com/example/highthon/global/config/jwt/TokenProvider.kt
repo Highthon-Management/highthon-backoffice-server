@@ -11,14 +11,9 @@ import com.example.highthon.global.config.security.principal.AuthDetailsService
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.springframework.data.redis.core.StringRedisTemplate
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.RequestBody
-import java.time.LocalDateTime
 import java.util.*
 
 @Component
@@ -26,7 +21,7 @@ class TokenProvider(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val property: TokenProperty,
     private val authDetailsService: AuthDetailsService,
-    private val redisTemplate: StringRedisTemplate
+    private val jwtTokenResolver: JwtTokenResolver
 ) {
 
     private fun generateAccessToken(sub: String): String {
@@ -82,33 +77,23 @@ class TokenProvider(
         return UsernamePasswordAuthenticationToken(authDetails, "", authDetails.authorities)
     }
 
-
-//유효성 검사?
-    private fun validateRefreshToken(refreshToken: String): Boolean {
-
-        return true;
-    }
-
-//레디스에서 리프레시 토큰 찾아서 phoneNumber 가져오기
-    private fun findIdByRefreshToken(refreshToken: String): String? {
-        return redisTemplate.opsForValue().get(refreshToken)
-    }
-
-    //리프레시 토큰으로 토큰 재발급
-    fun reissueToken(@RequestBody request: RefreshToken): ResponseEntity<TokenResponse> {
-        val refreshToken = request.token
-
-        if(!validateRefreshToken(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-        }
-
-        val id = findIdByRefreshToken(refreshToken)
-
-        return if(id != null){
-            val tokenResponse = receiveToken(id)
-            ResponseEntity.ok(tokenResponse)
-        } else {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-        }
-    }
+    //레디스에서 리프레시 토큰 찾아서 phoneNumber 가져오기
+//    private fun findIdByRefreshToken(refreshToken: String) =
+//        (refreshTokenRepository.findByIdOrNull(refreshToken) ?: throw InvalidTokenException).phoneNumber
+//
+//    //리프레시 토큰으로 토큰 재발급
+//    fun reissueToken(): ResponseEntity<TokenResponse> {
+//        val refreshToken = token.token
+//
+//        if(!validateRefreshToken(refreshToken)) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+//        }
+//
+//        val id = findIdByRefreshToken(refreshToken)
+//
+//        return run {
+//            val tokenResponse = receiveToken(id)
+//            ResponseEntity.ok(tokenResponse)
+//        }
+//    }
 }

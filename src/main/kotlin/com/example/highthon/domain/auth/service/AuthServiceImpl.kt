@@ -1,13 +1,12 @@
 package com.example.highthon.domain.auth.service
 
-import com.example.highthon.domain.auth.exception.NumberNotMatchedException
+import com.example.highthon.domain.auth.entity.type.NumberType
+import com.example.highthon.domain.auth.exception.MessageTypeNotMatchedException
 import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
+import com.example.highthon.domain.auth.presentation.dto.request.CheckNumberRequest
 import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
 import com.example.highthon.domain.auth.presentation.dto.request.SignUpRequest
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
-import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.user.entity.type.Role
@@ -24,9 +23,7 @@ class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val tokenProvider: TokenProvider,
     private val passwordEncoder: PasswordEncoder,
-    private val qualificationRepository: QualificationRepository,
-    private val userFacade: UserFacade,
-    private val smsService: SmsService
+    private val smsService: SMSService
 ): AuthService {
 
     @Transactional
@@ -42,47 +39,10 @@ class AuthServiceImpl(
      override fun signup(request: SignUpRequest,phoneNumber: String, number: Int) {
         val isVerificationCode = smsService.checkNumber(CheckNumberRequest(phoneNumber, number),NumberType.SIGN_UP)
 
-    @Transactional
-    override fun changePhoneNumber(req: ChangePhoneNumberRequest): UserProfileResponse {
         if (!isVerificationCode) {
             throw MessageTypeNotMatchedException
         }
 
-        val user = userFacade.getCurrentUser()
-
-        if (smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)) throw NumberNotMatchedException
-
-        qualificationRepository.deleteById(req.phoneNumber)
-
-        return userRepository.save(User(
-            user.id,
-            user.name,
-            req.phoneNumber,
-            user.password,
-            user.school,
-            user.part,
-            user.role
-        )).toResponse()
-    }
-
-    @Transactional
-    override fun changePassword(req: ChangePasswordRequest): UserProfileResponse {
-
-        val user = userFacade.getCurrentUser()
-
-        if (!smsService.passwordCheck(user, req.number!!)) throw NumberNotMatchedException
-
-        qualificationRepository.deleteById(user.phoneNumber)
-
-        return userRepository.save(User(
-            user.id,
-            user.name,
-            user.phoneNumber,
-            passwordEncoder.encode(req.password!!),
-            user.school,
-            user.part,
-            user.role
-        )).toResponse()
         val user = User(
             name = request.name?: "",
             phoneNumber = request.phoneNumber?: "",

@@ -50,17 +50,17 @@ class ApplicantServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (!applicantRepository.existsById(user.id!!)) throw ApplyNotFoundException
+        val applicant = applicantRepository.findByIdOrNull(user.id!!)
+            ?: throw ApplyNotFoundException
 
-        val applicant = applicantRepository.save(Applicant(
+        return applicantRepository.save(Applicant(
             user.id!!,
             user,
             req.motivation!!,
             req.githubLink,
-            req.isCanceled
-        ))
-
-        return applicant.toResponse()
+            applicant.isCanceled,
+            applicant.reason
+        )).toResponse()
     }
 
     @Transactional

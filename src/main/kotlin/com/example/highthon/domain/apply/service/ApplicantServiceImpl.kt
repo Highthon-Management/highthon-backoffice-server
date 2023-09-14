@@ -7,6 +7,7 @@ import com.example.highthon.domain.apply.exception.AlreadyCanceledApplyException
 import com.example.highthon.domain.apply.exception.ApplyNotFoundException
 import com.example.highthon.domain.apply.exception.PermissionDeniedException
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
+import com.example.highthon.domain.apply.presentaion.dto.request.EditApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
 import com.example.highthon.domain.apply.repository.ApplicantRepository
@@ -45,7 +46,7 @@ class ApplicantServiceImpl(
     }
 
     @Transactional
-    override fun edit(req: ApplyRequest): ApplyDetailResponse {
+    override fun edit(req: EditApplyRequest): ApplyDetailResponse {
 
         val user = userFacade.getCurrentUser()
 
@@ -94,14 +95,42 @@ class ApplicantServiceImpl(
         return apply.toResponse()
     }
 
-    override fun getListByPart(idx: Int, size: Int, part: Part): Page<ApplyListResponse> {
+    override fun getListByPart(idx: Int, size: Int, part: Part?): Page<ApplyListResponse> {
 
-        val user = userFacade.getCurrentUser()
+        if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
 
-        if (user.role != Role.ADMIN) throw PermissionDeniedException
+        return if (part == null) {
+            applicantRepository.findAllByIsCanceled(
+                false,
+                PageRequest.of(
+                    idx,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+                )
+            ).map {
+                it.toMinimumResponse()
+            }
+        } else {
+            applicantRepository.findAllByAndUserPartAndIsCanceled(
+                part,
+                false,
+                PageRequest.of(
+                    idx,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+                )
+            ).map {
+                it.toMinimumResponse()
+            }
+        }
+    }
 
-        return applicantRepository.findAllByAndUserPart(
-            part,
+    override fun getCanceledList(idx: Int, size: Int): Page<ApplyListResponse> {
+
+        if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
+
+        return applicantRepository.findAllByIsCanceled(
+            true,
             PageRequest.of(
                 idx,
                 size,

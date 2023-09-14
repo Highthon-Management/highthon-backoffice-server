@@ -11,5 +11,7 @@ import java.util.*
 @Repository
 interface ApplicantRepository: JpaRepository<Applicant, UUID> {
 
-    fun findAllByAndUserPart(part: Part, pageable: Pageable): Page<Applicant>
+    fun findAllByAndUserPartAndIsCanceled(part: Part, isCanceled: Boolean, pageable: Pageable): Page<Applicant>
+
+    fun findAllByIsCanceled(isCanceled: Boolean, pageable: Pageable): Page<Applicant>
 }

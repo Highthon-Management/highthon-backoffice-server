@@ -54,6 +54,7 @@ class User(
         this.id!!,
         this.name,
         this.phoneNumber,
-        this.school
+        this.school,
+        this.part
     )
 }

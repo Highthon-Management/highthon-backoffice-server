@@ -25,9 +25,9 @@ class UserServiceImpl(
             user.id,
             req.name!!,
             user.phoneNumber,
-            req.password!!,
+            user.password,
             req.school!!,
-            req.part,
+            req.part!!,
             user.role
         ))
 

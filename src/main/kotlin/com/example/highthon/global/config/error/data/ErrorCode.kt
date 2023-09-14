@@ -9,6 +9,7 @@ enum class ErrorCode(
 
     // 400
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
+    NUMBER_NOT_MATCHED(HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
     MESSAGE_TYPE_NOT_MATCHED(HttpStatus.BAD_REQUEST, "메세지 타입이 일치하지 않습니다."),
     PHONE_NUMBER_MATCHED(HttpStatus.BAD_REQUEST, "같은 전화번호 입니다."),
 

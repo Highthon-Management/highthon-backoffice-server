@@ -125,7 +125,7 @@ class SmsServiceImpl(
         val qualification = qualificationRepository.findByIdOrNull(user.phoneNumber)
             ?: throw MessageNotSentYetException
 
-        if (qualification.type != NumberType.CHANGE_PHONE_NUMBER) throw MessageTypeNotMatchedException
+        if (qualification.type != NumberType.CHANGE_PASSWORD) throw MessageTypeNotMatchedException
 
         return qualification.number == number
     }

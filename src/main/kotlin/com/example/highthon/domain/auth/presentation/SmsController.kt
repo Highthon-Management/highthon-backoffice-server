@@ -2,6 +2,7 @@ package com.example.highthon.domain.auth.presentation
 
 import com.example.highthon.domain.auth.presentation.dto.request.*
 import com.example.highthon.domain.auth.service.SmsService
+import com.example.highthon.global.common.facade.UserFacade
 import net.nurigo.sdk.message.response.SingleMessageSentResponse
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -12,7 +13,8 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/auth/sms")
 class SmsController(
-    private val smsService: SmsService
+    private val smsService: SmsService,
+    private val userFacade: UserFacade
 ) {
 
     @PostMapping
@@ -44,11 +46,14 @@ class SmsController(
     fun checkNumber(
         @RequestBody @Valid
         req: PhoneNumberCheckRequest
-    ): Boolean = smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)
+    ): Boolean {
+        userFacade.getCurrentUser()
+        return smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)
+    }
 
     @GetMapping("/check/password")
     fun checkNumber(
         @RequestBody @Valid
         req: PasswordCheckRequest
-    ): Boolean = smsService.passwordCheck(req.number!!)
+    ): Boolean = smsService.passwordCheck(userFacade.getCurrentUser(), req.number!!)
 }

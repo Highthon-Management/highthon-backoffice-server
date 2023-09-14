@@ -1,17 +1,20 @@
 package com.example.highthon.domain.auth.service
 
-import com.example.highthon.domain.auth.entity.type.NumberType
-import com.example.highthon.domain.auth.exception.MessageTypeNotMatchedException
+import com.example.highthon.domain.auth.exception.NumberNotMatchedException
 import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
-import com.example.highthon.domain.auth.presentation.dto.request.CheckNumberRequest
+import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
+import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
 import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
 import com.example.highthon.domain.auth.presentation.dto.request.SignUpRequest
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
+import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.exception.UserNotFoundException
+import com.example.highthon.domain.user.presentation.dto.response.UserProfileResponse
 import com.example.highthon.domain.user.repository.UserRepository
+import com.example.highthon.global.common.facade.UserFacade
 import com.example.highthon.global.config.jwt.TokenProvider
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -23,7 +26,9 @@ class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val tokenProvider: TokenProvider,
     private val passwordEncoder: PasswordEncoder,
-    private val smsService: SMSService
+    private val qualificationRepository: QualificationRepository,
+    private val userFacade: UserFacade,
+    private val smsService: SmsService
 ): AuthService {
 
     @Transactional
@@ -36,12 +41,48 @@ class AuthServiceImpl(
 
         return tokenProvider.receiveToken(user.phoneNumber)
     }
-     override fun signup(request: SignUpRequest,phoneNumber: String, number: Int) {
-        val isVerificationCode = smsService.checkNumber(CheckNumberRequest(phoneNumber, number),NumberType.SIGN_UP)
 
-        if (!isVerificationCode) {
-            throw MessageTypeNotMatchedException
-        }
+    @Transactional
+    override fun changePhoneNumber(req: ChangePhoneNumberRequest): UserProfileResponse {
+
+        val user = userFacade.getCurrentUser()
+
+        if (smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)) throw NumberNotMatchedException
+
+        qualificationRepository.deleteById(req.phoneNumber)
+
+        return userRepository.save(User(
+            user.id,
+            user.name,
+            req.phoneNumber,
+            user.password,
+            user.school,
+            user.part,
+            user.role
+        )).toResponse()
+    }
+
+    @Transactional
+    override fun changePassword(req: ChangePasswordRequest): UserProfileResponse {
+
+        val user = userFacade.getCurrentUser()
+
+        if (!smsService.passwordCheck(user, req.number!!)) throw NumberNotMatchedException
+
+        qualificationRepository.deleteById(user.phoneNumber)
+
+        return userRepository.save(User(
+            user.id,
+            user.name,
+            user.phoneNumber,
+            passwordEncoder.encode(req.password!!),
+            user.school,
+            user.part,
+            user.role
+        )).toResponse()
+    }
+
+    override fun signup(request: SignUpRequest, phoneNumber: String, number: Int) {
 
         val user = User(
             name = request.name?: "",

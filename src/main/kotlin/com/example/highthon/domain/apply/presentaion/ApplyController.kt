@@ -1,19 +1,15 @@
 package com.example.highthon.domain.apply.presentaion
 
+import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyCancelRequest
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
 import com.example.highthon.domain.apply.service.ApplyService
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
 
@@ -29,13 +25,13 @@ class ApplyController(
     fun apply(
         @RequestBody @Valid
         req: ApplyRequest
-    ): ApplyResponse = applyService.apply(req)
+    ): ApplyDetailResponse = applyService.apply(req)
 
-//    @PutMapping
-//    fun edit(
-//        @RequestBody @Valid
-//        req: ApplyRequest
-//    ): ApplyResponse = applyService.edit(req)
+    @PutMapping
+    fun edit(
+        @RequestBody @Valid
+        req: ApplyRequest
+    ): ApplyDetailResponse = applyService.edit(req)
 
     @DeleteMapping
     fun cancel(
@@ -45,9 +41,17 @@ class ApplyController(
         applyService.cancel(req.reason!!)
     }
 
-    @GetMapping
+    @GetMapping("/detail")
     fun getApplyDetail(
-        @RequestParam("id")
-        id: String
-    ): ApplyResponse = applyService.getDetail(UUID.fromString(id))
+        @RequestParam("id") id: UUID
+    ): ApplyDetailResponse = applyService.getDetail(id)
+
+
+    @GetMapping("/list")
+    fun getApplyList(
+        @RequestParam("idx") idx: Int = 0,
+        @RequestParam("size") size: Int = 5,
+        @RequestParam("part") part: Part
+    ): Page<ApplyListResponse> = applyService.getList(idx, size, part)
+
 }

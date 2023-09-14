@@ -8,8 +8,8 @@ import org.springframework.data.redis.core.index.Indexed
 data class RefreshToken (
 
     @Id
-    var id: String,
+    var token: String,
 
     @Indexed
-    var token: String
+    var phoneNumber: String,
 )

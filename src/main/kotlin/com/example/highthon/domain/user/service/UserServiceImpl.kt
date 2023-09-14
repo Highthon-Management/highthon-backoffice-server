@@ -22,13 +22,13 @@ class UserServiceImpl(
         val user = userFacade.getCurrentUser()
 
         val newUser = userRepository.save(User(
-            pk = user.pk,
-            name = req.name!!,
-            phoneNumber = user.phoneNumber,
-            password = req.password!!,
-            grade = req.grade!!,
-            school = req.school!!,
-            role = user.role
+            user.id,
+            req.name!!,
+            user.phoneNumber,
+            user.password,
+            req.school!!,
+            req.part!!,
+            user.role
         ))
 
         return newUser.toResponse()

@@ -34,13 +34,17 @@ class TokenProvider(
 
     private fun generateRefreshToken(sub: String): String {
 
+        val oldRedis = refreshTokenRepository.findByPhoneNumber(sub)
+
+        if (oldRedis != null) refreshTokenRepository.delete(oldRedis)
+
         val rfToken = Jwts.builder()
             .signWith(SignatureAlgorithm.HS256, property.secretKey)
             .setIssuedAt(Date())
             .setExpiration(Date(Date().time + property.refreshExp))
             .compact()
 
-        refreshTokenRepository.save(RefreshToken(sub, rfToken))
+        refreshTokenRepository.save(RefreshToken(rfToken, sub))
 
         return rfToken
     }

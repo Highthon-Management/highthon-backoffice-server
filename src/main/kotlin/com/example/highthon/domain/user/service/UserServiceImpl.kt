@@ -17,6 +17,7 @@ class UserServiceImpl(
 
     override fun getProfile(): UserProfileResponse = userFacade.getCurrentUser().toResponse()
 
+    @Transactional
     override fun editProfile(req: EditProfileRequest): UserProfileResponse {
 
         val user = userFacade.getCurrentUser()

@@ -36,16 +36,16 @@ class User(
     var password: String = password
         protected set
 
-    @Column(name = "school", columnDefinition = "VARCHAR(15)", nullable = false)
+    @Column(name = "school", length = 15, nullable = false)
     var school: String = school
         protected set
 
-    @Column(name = "part", columnDefinition = "VARCHAR(9)", nullable = false)
+    @Column(name = "part", length = 9, nullable = false)
     @Enumerated(EnumType.STRING)
     var part: Part = part
         protected set
 
-    @Column(name = "role", columnDefinition = "VARCHAR(11)", nullable = false)
+    @Column(name = "role", length = 11, nullable = false)
     @Enumerated(value = EnumType.STRING)
     var role: Role = role
         protected set

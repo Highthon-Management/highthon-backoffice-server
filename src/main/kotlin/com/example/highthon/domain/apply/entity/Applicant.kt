@@ -16,7 +16,8 @@ class Applicant(
     motivation: String,
     github: String?,
     isCanceled: Boolean? = null,
-    reason: String? = null
+    reason: String? = null,
+    bankAccount: String
 ) {
 
     @Id
@@ -29,11 +30,11 @@ class Applicant(
     var user: User = user
         protected set
 
-    @Column(name = "motivation", columnDefinition = "VARCHAR(1000)", nullable = false)
+    @Column(name = "motivation", length = 1000, nullable = false)
     var motivation: String = motivation
         protected set
 
-    @Column(name = "github_link", columnDefinition = "VARCHAR(30)")
+    @Column(name = "github_link", length = 30)
     var github: String? = github
         protected set
 
@@ -41,12 +42,16 @@ class Applicant(
     var isCanceled: Boolean = isCanceled ?: false
         protected set
 
-    @Column(name = "reason", columnDefinition = "VARCHAR(1000)")
+    @Column(name = "reason", length = 1000)
     var reason: String? = reason
         protected set
 
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
+        protected set
+
+    @Column(name = "bank_account", nullable = false, length = 30)
+    var bankAccount: String = bankAccount
         protected set
 
     fun toResponse() = ApplyDetailResponse(

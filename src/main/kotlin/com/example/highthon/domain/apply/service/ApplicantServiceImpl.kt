@@ -39,7 +39,8 @@ class ApplicantServiceImpl(
             null,
             user,
             req.motivation!!,
-            req.githubLink
+            req.githubLink,
+            bankAccount = req.bankAccount!!
         ))
 
         return applicant.toResponse()
@@ -59,7 +60,8 @@ class ApplicantServiceImpl(
             req.motivation!!,
             req.githubLink,
             applicant.isCanceled,
-            applicant.reason
+            applicant.reason,
+            applicant.bankAccount
         )).toResponse()
     }
 
@@ -68,18 +70,19 @@ class ApplicantServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        val apply = applicantRepository.findByIdOrNull(user.id!!)
+        val applicant = applicantRepository.findByIdOrNull(user.id!!)
             ?: throw ApplyNotFoundException
 
-        if (apply.isCanceled) throw AlreadyCanceledApplyException
+        if (applicant.isCanceled) throw AlreadyCanceledApplyException
 
         applicantRepository.save(Applicant(
             user.id!!,
             user,
-            apply.motivation,
-            apply.github,
+            applicant.motivation,
+            applicant.github,
             true,
-            reason
+            reason,
+            applicant.bankAccount
         ))
     }
 

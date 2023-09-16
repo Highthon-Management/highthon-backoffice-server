@@ -21,7 +21,7 @@ class TokenProvider(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val property: TokenProperty,
     private val authDetailsService: AuthDetailsService,
-    private val jwtTokenResolver: JwtTokenResolver
+    private val tokenProvider: TokenProvider
 ) {
 
     private fun generateAccessToken(sub: String): String {
@@ -77,23 +77,11 @@ class TokenProvider(
         return UsernamePasswordAuthenticationToken(authDetails, "", authDetails.authorities)
     }
 
-    //레디스에서 리프레시 토큰 찾아서 phoneNumber 가져오기
-//    private fun findIdByRefreshToken(refreshToken: String) =
-//        (refreshTokenRepository.findByIdOrNull(refreshToken) ?: throw InvalidTokenException).phoneNumber
-//
-//    //리프레시 토큰으로 토큰 재발급
-//    fun reissueToken(): ResponseEntity<TokenResponse> {
-//        val refreshToken = token.token
-//
-//        if(!validateRefreshToken(refreshToken)) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-//        }
-//
-//        val id = findIdByRefreshToken(refreshToken)
-//
-//        return run {
-//            val tokenResponse = receiveToken(id)
-//            ResponseEntity.ok(tokenResponse)
-//        }
-//    }
+    fun tokenReissue(refreshToken: String): TokenResponse{
+        val accountId = tokenProvider.getSubject(refreshToken)
+
+        return receiveToken(accountId)
+    }
+
+
 }

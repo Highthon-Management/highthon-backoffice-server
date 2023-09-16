@@ -1,5 +1,6 @@
 package com.example.highthon.domain.auth.service
 
+import com.example.highthon.domain.auth.entity.RefreshToken
 import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
 import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
 import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
@@ -16,4 +17,6 @@ interface AuthService {
     fun changePassword(req: ChangePasswordRequest): UserProfileResponse
 
     fun signup(request: SignUpRequest)
+
+    fun reissue(token: String): TokenResponse
 }

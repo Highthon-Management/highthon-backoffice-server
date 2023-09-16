@@ -1,5 +1,6 @@
 package com.example.highthon.domain.auth.service
 
+import com.example.highthon.domain.auth.entity.RefreshToken
 import com.example.highthon.domain.auth.exception.MessageNotSentYetException
 import com.example.highthon.domain.auth.exception.NumberNotMatchedException
 import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
@@ -101,6 +102,11 @@ class AuthServiceImpl(
         ))
 
         qualificationRepository.delete(qualification)
+    }
+
+    @Transactional
+    override fun reissue(token: String): TokenResponse{
+        return tokenProvider.tokenReissue(token)
     }
 
 }

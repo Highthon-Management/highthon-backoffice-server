@@ -54,7 +54,7 @@ class SmsServiceImpl(
 
         if (qualificationRepository.existsById(req.phoneNumber)) throw AlreadyPostedMessageException
 
-        val ran = Random().nextInt(1000000)
+        val ran = Random().nextInt(999999)
 
         return sendMessage(
             req.phoneNumber,
@@ -67,13 +67,11 @@ class SmsServiceImpl(
     @Transactional
     override fun sendPhoneNumberMessage(req: PhoneNumberSmsRequest): SingleMessageSentResponse? {
 
-        userFacade.getCurrentUser()
-
         if (userRepository.existsByPhoneNumber(req.phoneNumber!!)) throw AlreadySignUpException
 
         if (qualificationRepository.existsById(req.phoneNumber)) throw AlreadyPostedMessageException
 
-        val ran = Random().nextInt(1000000)
+        val ran = Random().nextInt(999999)
 
         return sendMessage(
             req.phoneNumber,
@@ -90,7 +88,7 @@ class SmsServiceImpl(
 
         if (qualificationRepository.existsById(user.phoneNumber)) throw AlreadyPostedMessageException
 
-        val ran = Random().nextInt(1000000)
+        val ran = Random().nextInt(999999)
 
         return sendMessage(
             user.phoneNumber,

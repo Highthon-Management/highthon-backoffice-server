@@ -17,7 +17,8 @@ class Applicant(
     github: String?,
     isCanceled: Boolean? = null,
     reason: String? = null,
-    bankAccount: String
+    bankAccount: String,
+    bankType: BankType
 ) {
 
     @Id
@@ -50,8 +51,13 @@ class Applicant(
     var createdAt: LocalDateTime = LocalDateTime.now()
         protected set
 
-    @Column(name = "bank_account", nullable = false, length = 30)
+    @Column(name = "bank_account", nullable = false)
     var bankAccount: String = bankAccount
+        protected set
+
+    @Column(name = "bank_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var bankType: BankType = bankType
         protected set
 
     fun toResponse() = ApplyDetailResponse(
@@ -63,7 +69,8 @@ class Applicant(
         this.user.part,
         this.github,
         this.isCanceled,
-        this.reason
+        this.reason,
+        String(Base64.getDecoder().decode(this.bankAccount))
     )
 
     fun toMinimumResponse() = ApplyListResponse(

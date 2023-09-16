@@ -20,12 +20,14 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
+import java.util.Base64.Encoder
 
 @Service
 @Transactional(readOnly = true)
 class ApplicantServiceImpl(
     private val applicantRepository: ApplicantRepository,
-    private val userFacade: UserFacade
+    private val userFacade: UserFacade,
+    private val bankEncoder: Encoder
 ): ApplicantService {
 
     @Transactional
@@ -40,7 +42,8 @@ class ApplicantServiceImpl(
             user,
             req.motivation!!,
             req.githubLink,
-            bankAccount = req.bankAccount!!
+            bankAccount = bankEncoder.encodeToString(req.bankAccount!!.toByteArray()),
+            bankType = req.bankType!!
         ))
 
         return applicant.toResponse()
@@ -61,7 +64,8 @@ class ApplicantServiceImpl(
             req.githubLink,
             applicant.isCanceled,
             applicant.reason,
-            applicant.bankAccount
+            applicant.bankAccount,
+            applicant.bankType
         )).toResponse()
     }
 
@@ -82,7 +86,8 @@ class ApplicantServiceImpl(
             applicant.github,
             true,
             reason,
-            applicant.bankAccount
+            applicant.bankAccount,
+            applicant.bankType
         ))
     }
 

@@ -4,14 +4,16 @@ import com.example.highthon.domain.apply.entity.Applicant
 import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.apply.exception.AlreadyAppliedException
 import com.example.highthon.domain.apply.exception.AlreadyCanceledApplyException
-import com.example.highthon.domain.apply.exception.ApplyNotFoundException
+import com.example.highthon.domain.apply.exception.ApplicantNotFoundException
 import com.example.highthon.domain.apply.exception.PermissionDeniedException
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.request.EditApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
 import com.example.highthon.domain.apply.repository.ApplicantRepository
+import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.entity.type.Role
+import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.common.facade.UserFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -27,7 +29,8 @@ import java.util.Base64.Encoder
 class ApplicantServiceImpl(
     private val applicantRepository: ApplicantRepository,
     private val userFacade: UserFacade,
-    private val bankEncoder: Encoder
+    private val bankEncoder: Encoder,
+    private val userRepository: UserRepository
 ): ApplicantService {
 
     @Transactional
@@ -55,7 +58,7 @@ class ApplicantServiceImpl(
         val user = userFacade.getCurrentUser()
 
         val applicant = applicantRepository.findByIdOrNull(user.id!!)
-            ?: throw ApplyNotFoundException
+            ?: throw ApplicantNotFoundException
 
         return applicantRepository.save(Applicant(
             user.id!!,
@@ -75,7 +78,7 @@ class ApplicantServiceImpl(
         val user = userFacade.getCurrentUser()
 
         val applicant = applicantRepository.findByIdOrNull(user.id!!)
-            ?: throw ApplyNotFoundException
+            ?: throw ApplicantNotFoundException
 
         if (applicant.isCanceled) throw AlreadyCanceledApplyException
 
@@ -96,7 +99,7 @@ class ApplicantServiceImpl(
         val user = userFacade.getCurrentUser()
 
         val apply = applicantRepository.findByIdOrNull(id)
-            ?: throw ApplyNotFoundException
+            ?: throw ApplicantNotFoundException
 
         if (user.role != Role.ADMIN && user.id!! != apply.id) throw PermissionDeniedException
 
@@ -108,8 +111,9 @@ class ApplicantServiceImpl(
         if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
 
         return if (part == null) {
-            applicantRepository.findAllByIsCanceled(
+            applicantRepository.findAllByIsCanceledAndUserRole(
                 false,
+                Role.USER,
                 PageRequest.of(
                     idx,
                     size,
@@ -119,9 +123,10 @@ class ApplicantServiceImpl(
                 it.toMinimumResponse()
             }
         } else {
-            applicantRepository.findAllByAndUserPartAndIsCanceled(
+            applicantRepository.findAllByAndUserPartAndIsCanceledAndUserRole(
                 part,
                 false,
+                Role.USER,
                 PageRequest.of(
                     idx,
                     size,
@@ -137,8 +142,9 @@ class ApplicantServiceImpl(
 
         if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
 
-        return applicantRepository.findAllByIsCanceled(
+        return applicantRepository.findAllByIsCanceledAndUserRole(
             true,
+            Role.USER,
             PageRequest.of(
                 idx,
                 size,
@@ -147,5 +153,24 @@ class ApplicantServiceImpl(
         ).map {
             it.toMinimumResponse()
         }
+    }
+
+    @Transactional
+    override fun approve(id: UUID) {
+
+        val applicant = applicantRepository.findByIdOrNull(id)
+            ?: throw ApplicantNotFoundException
+
+        if (userFacade.getCurrentUser().role != Role.ADMIN || applicant.user.role == Role.ADMIN) throw PermissionDeniedException
+
+        userRepository.save(User(
+            applicant.user.id,
+            applicant.user.name,
+            applicant.user.phoneNumber,
+            applicant.user.password,
+            applicant.user.school,
+            applicant.user.part,
+            Role.PARTICIPANT
+        ))
     }
 }

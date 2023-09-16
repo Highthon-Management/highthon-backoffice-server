@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import java.util.*
 
 @Configuration
 @EnableWebSecurity
@@ -45,4 +46,7 @@ class SecurityConfig(
 
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
+
+    @Bean
+    fun bankEncoder(): Base64.Encoder = Base64.getEncoder()
 }

@@ -43,28 +43,32 @@ class ApplicantController(
     }
 
     @GetMapping("/detail")
-    fun getApplyDetail(
+    fun getApplicantDetail(
         @RequestParam("id") id: UUID
     ): ApplyDetailResponse = applicantService.getDetail(id)
 
 
     @GetMapping("/list/{part}")
-    fun getApplyListByPart(
-        @RequestParam("idx") idx: Int = 0,
-        @RequestParam("size") size: Int = 5,
+    fun getApplicantListByPart(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
         @PathVariable("part") part: Part
     ): Page<ApplyListResponse> = applicantService.getListByPart(idx, size, part)
 
     @GetMapping("/list")
     fun getApplyList(
-        @RequestParam("idx") idx: Int = 0,
-        @RequestParam("size") size: Int = 5
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5
     ): Page<ApplyListResponse> = applicantService.getListByPart(idx, size, null)
 
     @GetMapping("/list/cancel")
-    fun getCanceledApply(
-        @RequestParam("idx") idx: Int = 0,
-        @RequestParam("size") size: Int = 5
+    fun getCanceledApplicant(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5
     ): Page<ApplyListResponse> = applicantService.getCanceledList(idx, size)
 
+    @PostMapping("/approve")
+    fun approveApplicant(
+        @RequestParam("id", required = true) id: UUID
+    ) { applicantService.approve(id) }
 }

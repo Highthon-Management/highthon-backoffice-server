@@ -21,7 +21,7 @@ enum class ErrorCode(
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
-    APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "신청을 한 적이 없습니다."),
+    APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "신청을 한 적이 없습니다."),
 
     // 409
     ALREADY_POSTED_MESSAGE(HttpStatus.CONFLICT, "이미 문자 요청을 보냈습니다."),

@@ -12,5 +12,6 @@ data class ApplyDetailResponse (
     val part: Part,
     val githubLink: String?,
     val isCanceled: Boolean,
-    val reason: String?
+    val reason: String?,
+    val bankAccount: String
 )

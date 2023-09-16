@@ -36,8 +36,10 @@ class SecurityConfig(
             .and()
             .authorizeRequests()
 
-            .antMatchers("*").permitAll()
-            .anyRequest().permitAll()
+            .antMatchers("/auth/sms").permitAll()
+            .antMatchers("/auth/sms/check").permitAll()
+            .antMatchers("/auth/login").permitAll()
+            .anyRequest().authenticated()
             .and()
 
             .apply(FilterConfig(tokenProvider, tokenResolver, exceptionHandlerFilter))

@@ -16,7 +16,9 @@ class Applicant(
     motivation: String,
     github: String?,
     isCanceled: Boolean? = null,
-    reason: String? = null
+    reason: String? = null,
+    bankAccount: String,
+    bankType: BankType
 ) {
 
     @Id
@@ -29,11 +31,11 @@ class Applicant(
     var user: User = user
         protected set
 
-    @Column(name = "motivation", columnDefinition = "VARCHAR(1000)", nullable = false)
+    @Column(name = "motivation", length = 1000, nullable = false)
     var motivation: String = motivation
         protected set
 
-    @Column(name = "github_link", columnDefinition = "VARCHAR(30)")
+    @Column(name = "github_link", length = 30)
     var github: String? = github
         protected set
 
@@ -41,12 +43,21 @@ class Applicant(
     var isCanceled: Boolean = isCanceled ?: false
         protected set
 
-    @Column(name = "reason", columnDefinition = "VARCHAR(1000)")
+    @Column(name = "reason", length = 1000)
     var reason: String? = reason
         protected set
 
     @Column(name = "created_at", nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
+        protected set
+
+    @Column(name = "bank_account", nullable = false)
+    var bankAccount: String = bankAccount
+        protected set
+
+    @Column(name = "bank_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var bankType: BankType = bankType
         protected set
 
     fun toResponse() = ApplyDetailResponse(
@@ -58,7 +69,8 @@ class Applicant(
         this.user.part,
         this.github,
         this.isCanceled,
-        this.reason
+        this.reason,
+        String(Base64.getDecoder().decode(this.bankAccount))
     )
 
     fun toMinimumResponse() = ApplyListResponse(

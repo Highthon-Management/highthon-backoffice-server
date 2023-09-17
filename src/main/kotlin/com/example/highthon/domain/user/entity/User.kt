@@ -15,6 +15,7 @@ class User(
     phoneNumber: String,
     password: String,
     school: String,
+    grade: Int,
     part: Part,
     role: Role
 ) {
@@ -38,6 +39,10 @@ class User(
 
     @Column(name = "school", length = 15, nullable = false)
     var school: String = school
+        protected set
+
+    @Column(name = "grade", nullable = false)
+    var grade: Int = grade
         protected set
 
     @Column(name = "part", length = 9, nullable = false)

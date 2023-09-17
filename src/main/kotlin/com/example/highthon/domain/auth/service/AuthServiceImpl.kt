@@ -55,6 +55,7 @@ class AuthServiceImpl(
             req.phoneNumber,
             user.password,
             user.school,
+            user.grade,
             user.part,
             user.role
         )).toResponse()
@@ -75,6 +76,7 @@ class AuthServiceImpl(
             user.phoneNumber,
             passwordEncoder.encode(req.password!!),
             user.school,
+            user.grade,
             user.part,
             user.role
         )).toResponse()
@@ -93,8 +95,9 @@ class AuthServiceImpl(
             phoneNumber = request.phoneNumber,
             school = request.school!!,
             password = passwordEncoder.encode(request.password!!),
-            role = Role.USER,
-            part = request.part
+            role = Role.PARTICIPANT,
+            part = request.part,
+            grade = request.grade!!
         ))
 
         qualificationRepository.delete(qualification)

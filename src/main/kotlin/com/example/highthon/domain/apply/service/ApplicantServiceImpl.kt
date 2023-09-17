@@ -113,7 +113,7 @@ class ApplicantServiceImpl(
         return if (part == null) {
             applicantRepository.findAllByIsCanceledAndUserRole(
                 false,
-                Role.USER,
+                Role.PARTICIPANT,
                 PageRequest.of(
                     idx,
                     size,
@@ -126,7 +126,7 @@ class ApplicantServiceImpl(
             applicantRepository.findAllByAndUserPartAndIsCanceledAndUserRole(
                 part,
                 false,
-                Role.USER,
+                Role.PARTICIPANT,
                 PageRequest.of(
                     idx,
                     size,
@@ -144,7 +144,7 @@ class ApplicantServiceImpl(
 
         return applicantRepository.findAllByIsCanceledAndUserRole(
             true,
-            Role.USER,
+            Role.PARTICIPANT,
             PageRequest.of(
                 idx,
                 size,
@@ -169,6 +169,7 @@ class ApplicantServiceImpl(
             applicant.user.phoneNumber,
             applicant.user.password,
             applicant.user.school,
+            applicant.user.grade,
             applicant.user.part,
             Role.PARTICIPANT
         ))

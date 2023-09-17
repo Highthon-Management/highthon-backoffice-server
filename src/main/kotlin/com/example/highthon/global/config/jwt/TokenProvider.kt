@@ -11,9 +11,11 @@ import com.example.highthon.global.config.security.principal.AuthDetailsService
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Component
@@ -77,11 +79,14 @@ class TokenProvider(
         return UsernamePasswordAuthenticationToken(authDetails, "", authDetails.authorities)
     }
 
-    fun tokenReissue(refreshToken: String): TokenResponse{
-        val accountId = tokenProvider.getSubject(refreshToken)
+    fun reissue(token: String): TokenResponse{
+        
+        val refreshToken = refreshTokenRepository.findByIdOrNull(token)
+            ?: throw InvalidTokenException
 
-        return receiveToken(accountId)
+        refreshTokenRepository.delete(refreshToken)
+
+        return tokenProvider.receiveToken(refreshToken.phoneNumber)
     }
-
 
 }

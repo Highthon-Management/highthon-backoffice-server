@@ -47,8 +47,9 @@ class AuthController(
     }
 
     @PostMapping("/reissue")
+    @ResponseStatus(HttpStatus.CREATED)
     fun reissue(
         @RequestBody @Valid
-        token: String
-    ): TokenResponse = authService.reissue(token)
+        request: ReissueRequest
+    ): TokenResponse = authService.reissue(request)
 }

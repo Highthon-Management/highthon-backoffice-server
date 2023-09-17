@@ -1,13 +1,9 @@
 package com.example.highthon.domain.auth.service
 
-import com.example.highthon.domain.auth.entity.RefreshToken
 import com.example.highthon.domain.auth.exception.MessageNotSentYetException
 import com.example.highthon.domain.auth.exception.NumberNotMatchedException
 import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
-import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
-import com.example.highthon.domain.auth.presentation.dto.request.SignUpRequest
+import com.example.highthon.domain.auth.presentation.dto.request.*
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.entity.User
@@ -30,7 +26,7 @@ class AuthServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val qualificationRepository: QualificationRepository,
     private val userFacade: UserFacade,
-    private val smsService: SmsService
+    private val smsService: SmsService,
 ): AuthService {
 
     @Transactional
@@ -105,8 +101,6 @@ class AuthServiceImpl(
     }
 
     @Transactional
-    override fun reissue(token: String): TokenResponse{
-        return tokenProvider.tokenReissue(token)
-    }
+    override fun reissue(req: ReissueRequest): TokenResponse = tokenProvider.reissue(req.refreshToken)
 
 }

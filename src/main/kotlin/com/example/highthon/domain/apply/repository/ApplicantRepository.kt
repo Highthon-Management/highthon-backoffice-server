@@ -14,5 +14,10 @@ interface ApplicantRepository: JpaRepository<Applicant, UUID> {
 
     fun findAllByAndUserPartAndIsCanceledAndUserRole(part: Part, isCanceled: Boolean, userRole: Role, pageable: Pageable): Page<Applicant>
 
+    fun findAllByAndSchoolAndIsCanceledAndUserRole(school: String, isCanceled: Boolean, userRole: Role, pageable: Pageable): Page<Applicant>
+
+    fun findAllByAndGradeAndIsCanceledAndUserRole(grade: Int, isCanceled: Boolean, userRole: Role, pageable: Pageable): Page<Applicant>
+
+
     fun findAllByIsCanceledAndUserRole(isCanceled: Boolean, userRole: Role, pageable: Pageable): Page<Applicant>
 }

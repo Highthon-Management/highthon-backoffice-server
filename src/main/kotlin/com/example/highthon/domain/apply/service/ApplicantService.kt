@@ -20,6 +20,10 @@ interface ApplicantService {
 
     fun getListByPart(idx: Int, size: Int, part: Part?): Page<ApplyListResponse>
 
+    fun getListBySchool(idx: Int, size: Int, school: String?): Page<ApplyListResponse>
+
+    fun getListByGrade(idx: Int, size: Int, grade: Int?): Page<ApplyListResponse>
+
     fun getCanceledList(idx: Int, size: Int): Page<ApplyListResponse>
 
     fun approve(id: UUID)

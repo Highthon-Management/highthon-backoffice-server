@@ -55,6 +55,20 @@ class ApplicantController(
         @PathVariable("part") part: Part
     ): Page<ApplyListResponse> = applicantService.getListByPart(idx, size, part)
 
+    @GetMapping("/list/{school}")
+    fun getApplicantListBySchool(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+        @PathVariable("school") school: String
+    ): Page<ApplyListResponse> = applicantService.getListBySchool(idx, size, school)
+
+    @GetMapping("/list/{grade}")
+    fun getApplicantListByGrade(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+        @PathVariable("grade") grade: Int
+    ): Page<ApplyListResponse> = applicantService.getListByGrade(idx, size, grade)
+
     @GetMapping("/list")
     fun getApplyList(
         @RequestParam("idx", required = true) idx: Int = 0,

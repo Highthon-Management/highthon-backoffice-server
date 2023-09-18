@@ -138,6 +138,70 @@ class ApplicantServiceImpl(
         }
     }
 
+    override fun getListBySchool(idx: Int, size: Int, school: String?): Page<ApplyListResponse> {
+
+        if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
+
+        return if (school == null) {
+            applicantRepository.findAllByIsCanceledAndUserRole(
+                false,
+                Role.PARTICIPANT,
+                PageRequest.of(
+                    idx,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+                )
+            ).map {
+                it.toMinimumResponse()
+            }
+        } else {
+            applicantRepository.findAllByAndSchoolAndIsCanceledAndUserRole(
+                school,
+                false,
+                Role.PARTICIPANT,
+                PageRequest.of(
+                    idx,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+                )
+            ).map {
+                it.toMinimumResponse()
+            }
+        }
+    }
+
+    override fun getListByGrade(idx: Int, size: Int, grade: Int?): Page<ApplyListResponse> {
+
+        if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
+
+        return if (grade == null) {
+            applicantRepository.findAllByIsCanceledAndUserRole(
+                false,
+                Role.PARTICIPANT,
+                PageRequest.of(
+                    idx,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+                )
+            ).map {
+                it.toMinimumResponse()
+            }
+        } else {
+            applicantRepository.findAllByAndGradeAndIsCanceledAndUserRole(
+                grade,
+                false,
+                Role.PARTICIPANT,
+                PageRequest.of(
+                    idx,
+                    size,
+                    Sort.by(Sort.Direction.DESC, "createdAt")
+                )
+            ).map {
+                it.toMinimumResponse()
+            }
+        }
+    }
+
     override fun getCanceledList(idx: Int, size: Int): Page<ApplyListResponse> {
 
         if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException

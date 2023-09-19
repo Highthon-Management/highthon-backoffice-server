@@ -4,8 +4,10 @@ import com.example.highthon.global.config.error.handler.ExceptionHandlerFilter
 import com.example.highthon.global.config.filter.FilterConfig
 import com.example.highthon.global.config.jwt.JwtTokenResolver
 import com.example.highthon.global.config.jwt.TokenProvider
+import com.example.highthon.global.config.sms.SmsProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -18,7 +20,8 @@ import java.util.*
 class SecurityConfig(
     private val tokenProvider: TokenProvider,
     private val exceptionHandlerFilter: ExceptionHandlerFilter,
-    private val tokenResolver: JwtTokenResolver
+    private val tokenResolver: JwtTokenResolver,
+    private val property: SmsProperty
 ) {
 
     @Bean
@@ -39,6 +42,8 @@ class SecurityConfig(
             .antMatchers("/auth/sms").permitAll()
             .antMatchers("/auth/sms/check").permitAll()
             .antMatchers("/auth/login").permitAll()
+            .antMatchers("/auth/sms/test").permitAll()
+            .antMatchers(HttpMethod.POST, "/auth").permitAll()
             .anyRequest().authenticated()
             .and()
 

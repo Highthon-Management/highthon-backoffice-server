@@ -66,15 +66,13 @@ class AuthServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (!smsService.passwordCheck(user, req.number!!)) throw NumberNotMatchedException
-
-        qualificationRepository.deleteById(user.phoneNumber)
+        if (!passwordEncoder.matches(req.oldPassword!!, user.password)) throw PasswordNotMatchedException
 
         return userRepository.save(User(
             user.id,
             user.name,
             user.phoneNumber,
-            passwordEncoder.encode(req.password!!),
+            passwordEncoder.encode(req.newPassword!!),
             user.school,
             user.grade,
             user.part,

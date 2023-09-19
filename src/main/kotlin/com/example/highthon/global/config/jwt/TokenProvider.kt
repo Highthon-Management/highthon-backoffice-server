@@ -11,6 +11,7 @@ import com.example.highthon.global.config.security.principal.AuthDetailsService
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import okhttp3.internal.wait
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -22,8 +23,7 @@ import java.util.*
 class TokenProvider(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val property: TokenProperty,
-    private val authDetailsService: AuthDetailsService,
-    private val tokenProvider: TokenProvider
+    private val authDetailsService: AuthDetailsService
 ) {
 
     private fun generateAccessToken(sub: String): String {
@@ -37,9 +37,11 @@ class TokenProvider(
 
     private fun generateRefreshToken(sub: String): String {
 
-        val oldRedis = refreshTokenRepository.findByPhoneNumber(sub)
+        refreshTokenRepository.findByIdOrNull(sub)?.let {
+                refreshTokenRepository.delete(it)
+            }.apply {
 
-        if (oldRedis != null) refreshTokenRepository.delete(oldRedis)
+        }
 
         val rfToken = Jwts.builder()
             .signWith(SignatureAlgorithm.HS256, property.secretKey)
@@ -86,7 +88,7 @@ class TokenProvider(
 
         refreshTokenRepository.delete(refreshToken)
 
-        return tokenProvider.receiveToken(refreshToken.phoneNumber)
+        return receiveToken(refreshToken.phoneNumber)
     }
 
 }

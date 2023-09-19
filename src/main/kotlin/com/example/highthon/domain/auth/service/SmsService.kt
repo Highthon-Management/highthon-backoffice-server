@@ -10,11 +10,7 @@ interface SmsService {
 
     fun sendPhoneNumberMessage(req: PhoneNumberSmsRequest): SingleMessageSentResponse?
 
-    fun sendPasswordMessage(): SingleMessageSentResponse?
-
     fun singUpCheck(phoneNumber: String, number: Int): Boolean
 
     fun phoneNumberCheck(phoneNumber: String, number: Int): Boolean
-
-    fun passwordCheck(user: User, number: Int): Boolean
 }

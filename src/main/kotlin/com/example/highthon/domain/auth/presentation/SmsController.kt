@@ -1,8 +1,10 @@
 package com.example.highthon.domain.auth.presentation
 
-import com.example.highthon.domain.auth.presentation.dto.request.*
+import com.example.highthon.domain.auth.presentation.dto.request.PhoneNumberCheckRequest
+import com.example.highthon.domain.auth.presentation.dto.request.PhoneNumberSmsRequest
+import com.example.highthon.domain.auth.presentation.dto.request.SignUpCheckRequest
+import com.example.highthon.domain.auth.presentation.dto.request.SignUpSmsRequest
 import com.example.highthon.domain.auth.service.SmsService
-import com.example.highthon.global.common.facade.UserFacade
 import net.nurigo.sdk.message.response.SingleMessageSentResponse
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -13,8 +15,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/auth/sms")
 class SmsController(
-    private val smsService: SmsService,
-    private val userFacade: UserFacade
+    private val smsService: SmsService
 ) {
 
     @PostMapping
@@ -31,11 +32,6 @@ class SmsController(
         req: PhoneNumberSmsRequest
     ): SingleMessageSentResponse? = smsService.sendPhoneNumberMessage(req)
 
-    @PostMapping("/password")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun sendPasswordMessage(): SingleMessageSentResponse? = smsService.sendPasswordMessage()
-
-
     @GetMapping("/check")
     fun checkNumber(
         @RequestBody @Valid
@@ -46,14 +42,5 @@ class SmsController(
     fun checkNumber(
         @RequestBody @Valid
         req: PhoneNumberCheckRequest
-    ): Boolean {
-        userFacade.getCurrentUser()
-        return smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)
-    }
-
-    @GetMapping("/check/password")
-    fun checkNumber(
-        @RequestBody @Valid
-        req: PasswordCheckRequest
-    ): Boolean = smsService.passwordCheck(userFacade.getCurrentUser(), req.number!!)
+    ): Boolean = smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)
 }

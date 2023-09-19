@@ -4,8 +4,9 @@ import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyCancelRequest
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.request.EditApplyRequest
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
+import com.example.highthon.domain.apply.presentaion.dto.request.EmpowermentRequest
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantDetailResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantListResponse
 import com.example.highthon.domain.apply.service.ApplicantService
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
@@ -26,13 +27,13 @@ class ApplicantController(
     fun apply(
         @RequestBody @Valid
         req: ApplyRequest
-    ): ApplyDetailResponse = applicantService.apply(req)
+    ): ApplicantDetailResponse = applicantService.apply(req)
 
     @PutMapping
     fun edit(
         @RequestBody @Valid
         req: EditApplyRequest
-    ): ApplyDetailResponse = applicantService.edit(req)
+    ): ApplicantDetailResponse = applicantService.edit(req)
 
     @DeleteMapping
     fun cancel(
@@ -45,7 +46,7 @@ class ApplicantController(
     @GetMapping("/detail")
     fun getApplicantDetail(
         @RequestParam("id") id: UUID
-    ): ApplyDetailResponse = applicantService.getDetail(id)
+    ): ApplicantDetailResponse = applicantService.getDetail(id)
 
 
     @GetMapping("/list/{part}")
@@ -53,7 +54,7 @@ class ApplicantController(
         @RequestParam("idx", required = true) idx: Int = 0,
         @RequestParam("size", required = true) size: Int = 5,
         @PathVariable("part") part: Part
-    ): Page<ApplyListResponse> = applicantService.getListByPart(idx, size, part)
+    ): Page<ApplicantListResponse> = applicantService.getListByPart(idx, size, part)
 
     @GetMapping("/list/{school}")
     fun getApplicantListBySchool(
@@ -73,16 +74,18 @@ class ApplicantController(
     fun getApplyList(
         @RequestParam("idx", required = true) idx: Int = 0,
         @RequestParam("size", required = true) size: Int = 5
-    ): Page<ApplyListResponse> = applicantService.getListByPart(idx, size, null)
+    ): Page<ApplicantListResponse> = applicantService.getListByPart(idx, size)
 
     @GetMapping("/list/cancel")
     fun getCanceledApplicant(
         @RequestParam("idx", required = true) idx: Int = 0,
         @RequestParam("size", required = true) size: Int = 5
-    ): Page<ApplyListResponse> = applicantService.getCanceledList(idx, size)
+    ): Page<ApplicantListResponse> = applicantService.getCanceledList(idx, size)
 
-    @PostMapping("/approve")
-    fun approveApplicant(
-        @RequestParam("id", required = true) id: UUID
-    ) { applicantService.approve(id) }
+    @PostMapping("/empowerment")
+    fun empowermentApplicant(
+        @RequestParam("id", required = true) id: UUID,
+        @RequestBody @Valid
+        req: EmpowermentRequest
+    ): ApplicantDetailResponse = applicantService.empowerment(id, req.role!!)
 }

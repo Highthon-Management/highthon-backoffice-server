@@ -8,8 +8,8 @@ import com.example.highthon.domain.apply.exception.ApplicantNotFoundException
 import com.example.highthon.domain.apply.exception.PermissionDeniedException
 import com.example.highthon.domain.apply.presentaion.dto.request.ApplyRequest
 import com.example.highthon.domain.apply.presentaion.dto.request.EditApplyRequest
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantDetailResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantListResponse
 import com.example.highthon.domain.apply.repository.ApplicantRepository
 import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.entity.type.Role
@@ -34,7 +34,7 @@ class ApplicantServiceImpl(
 ): ApplicantService {
 
     @Transactional
-    override fun apply(req: ApplyRequest): ApplyDetailResponse {
+    override fun apply(req: ApplyRequest): ApplicantDetailResponse {
 
         val user = userFacade.getCurrentUser()
 
@@ -53,7 +53,7 @@ class ApplicantServiceImpl(
     }
 
     @Transactional
-    override fun edit(req: EditApplyRequest): ApplyDetailResponse {
+    override fun edit(req: EditApplyRequest): ApplicantDetailResponse {
 
         val user = userFacade.getCurrentUser()
 
@@ -94,7 +94,7 @@ class ApplicantServiceImpl(
         ))
     }
 
-    override fun getDetail(id: UUID): ApplyDetailResponse {
+    override fun getDetail(id: UUID): ApplicantDetailResponse {
 
         val user = userFacade.getCurrentUser()
 
@@ -106,7 +106,7 @@ class ApplicantServiceImpl(
         return apply.toResponse()
     }
 
-    override fun getListByPart(idx: Int, size: Int, part: Part?): Page<ApplyListResponse> {
+    override fun getListByPart(idx: Int, size: Int, part: Part?): Page<ApplicantListResponse> {
 
         if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
 
@@ -137,7 +137,7 @@ class ApplicantServiceImpl(
             }
         }
     }
-
+    
     override fun getListBySchool(idx: Int, size: Int, school: String?): Page<ApplyListResponse> {
 
         if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
@@ -202,7 +202,7 @@ class ApplicantServiceImpl(
         }
     }
 
-    override fun getCanceledList(idx: Int, size: Int): Page<ApplyListResponse> {
+    override fun getCanceledList(idx: Int, size: Int): Page<ApplicantListResponse> {
 
         if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
 
@@ -220,12 +220,13 @@ class ApplicantServiceImpl(
     }
 
     @Transactional
-    override fun approve(id: UUID) {
+    override fun empowerment(id: UUID, role: Role): ApplicantDetailResponse {
 
         val applicant = applicantRepository.findByIdOrNull(id)
             ?: throw ApplicantNotFoundException
 
-        if (userFacade.getCurrentUser().role != Role.ADMIN || applicant.user.role == Role.ADMIN) throw PermissionDeniedException
+        if ((userFacade.getCurrentUser().role != Role.ADMIN || applicant.user.role == Role.ADMIN) || //토큰이 어드민이 아니거나, 변경하려는 신청의 권한이 ADMIN인 경우
+            (role != Role.WAITING && role != Role.CONFIRMED)) throw PermissionDeniedException //올바른 권한으로 변경하지 않는 경우
 
         userRepository.save(User(
             applicant.user.id,
@@ -235,7 +236,9 @@ class ApplicantServiceImpl(
             applicant.user.school,
             applicant.user.grade,
             applicant.user.part,
-            Role.PARTICIPANT
+            role
         ))
+
+        return applicant.toResponse()
     }
 }

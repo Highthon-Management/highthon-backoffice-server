@@ -43,6 +43,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
+    // logging
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
+
     // cool sms
     implementation("net.nurigo:sdk:4.3.0")
 

@@ -63,7 +63,7 @@ class SmsScheduler(
     }
 
     @Transactional
-    @Scheduled(cron = "0 1 23 19 9 ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 8 1 1 ?", zone = "Asia/Seoul") // 추후에 날짜 변경할 것
     fun sendMessageToConfirmed() {
 
         val messageList = userRepository.findAllByRole(Role.CONFIRMED)?.map {

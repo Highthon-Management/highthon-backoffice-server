@@ -3,13 +3,12 @@ package com.example.highthon.domain.auth.service
 import com.example.highthon.domain.auth.entity.Qualification
 import com.example.highthon.domain.auth.entity.type.NumberType
 import com.example.highthon.domain.auth.exception.*
-import com.example.highthon.domain.auth.presentation.dto.request.*
+import com.example.highthon.domain.auth.presentation.dto.request.PhoneNumberSmsRequest
+import com.example.highthon.domain.auth.presentation.dto.request.SignUpSmsRequest
 import com.example.highthon.domain.auth.repository.QualificationRepository
-import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.repository.UserRepository
-import com.example.highthon.global.common.facade.UserFacade
-import com.example.highthon.global.config.sms.SMSProperty
-import net.nurigo.sdk.NurigoApp.initialize
+import com.example.highthon.global.config.sms.SmsProperty
+import mu.KLogger
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.model.MessageType
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest
@@ -23,16 +22,14 @@ import java.util.*
 @Service
 @Transactional(readOnly = true)
 class SmsServiceImpl(
-    private val property: SMSProperty,
+    private val property: SmsProperty,
     private val qualificationRepository: QualificationRepository,
-    private val userFacade: UserFacade,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val messageService: DefaultMessageService,
+    private val logger: KLogger
 ): SmsService {
 
-    val messageService: DefaultMessageService = initialize(property.apiKey, property.apiSecret, "https://api.coolsms.co.kr")
-
-
-    private fun sendMessage(phoneNumber: String, text: String, messageType: NumberType, ran: Int): SingleMessageSentResponse? {
+    private fun sendMessage(phoneNumber: String, text: String, messageType: NumberType, ran: Int): SingleMessageSentResponse {
 
         val message = Message(
             from = property.sender,
@@ -42,9 +39,17 @@ class SmsServiceImpl(
             country = "+82"
         )
 
+        var res: SingleMessageSentResponse? = null
+        try {
+            res = messageService.sendOne(SingleMessageSendingRequest(message))
+
+        } catch (e: Exception){
+            logger.error { e.localizedMessage }
+            logger.error { e.stackTrace }
+        }
         qualificationRepository.save(Qualification(phoneNumber, ran, messageType))
 
-        return messageService.sendOne(SingleMessageSendingRequest(message))
+        return res ?: throw PhoneNumberNotExistException
     }
 
     @Transactional
@@ -54,7 +59,7 @@ class SmsServiceImpl(
 
         if (qualificationRepository.existsById(req.phoneNumber)) throw AlreadyPostedMessageException
 
-        val ran = Random().nextInt(999999)
+        val ran = Random().nextInt(1000000)
 
         return sendMessage(
             req.phoneNumber,
@@ -71,29 +76,12 @@ class SmsServiceImpl(
 
         if (qualificationRepository.existsById(req.phoneNumber)) throw AlreadyPostedMessageException
 
-        val ran = Random().nextInt(999999)
+        val ran = Random().nextInt(1000000)
 
         return sendMessage(
             req.phoneNumber,
             "\n[Highthon 휴대폰 인증]\n하이톤 전화번호 변경 인증번호 $ran 입니다.",
             NumberType.CHANGE_PHONE_NUMBER,
-            ran
-        )
-    }
-
-    @Transactional
-    override fun sendPasswordMessage(): SingleMessageSentResponse? {
-
-        val user = userFacade.getCurrentUser()
-
-        if (qualificationRepository.existsById(user.phoneNumber)) throw AlreadyPostedMessageException
-
-        val ran = Random().nextInt(999999)
-
-        return sendMessage(
-            user.phoneNumber,
-            "\n[Highthon 휴대폰 인증]\n하이톤 비밀번호 변경 인증번호 $ran 입니다.",
-            NumberType.CHANGE_PASSWORD,
             ran
         )
     }
@@ -114,16 +102,6 @@ class SmsServiceImpl(
             ?: throw MessageNotSentYetException
 
         if (qualification.type != NumberType.CHANGE_PHONE_NUMBER) throw MessageTypeNotMatchedException
-
-        return qualification.number == number
-    }
-
-    override fun passwordCheck(user: User, number: Int): Boolean {
-
-        val qualification = qualificationRepository.findByIdOrNull(user.phoneNumber)
-            ?: throw MessageNotSentYetException
-
-        if (qualification.type != NumberType.CHANGE_PASSWORD) throw MessageTypeNotMatchedException
 
         return qualification.number == number
     }

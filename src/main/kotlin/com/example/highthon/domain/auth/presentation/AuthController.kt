@@ -1,5 +1,6 @@
 package com.example.highthon.domain.auth.presentation
 
+import com.example.highthon.domain.auth.entity.RefreshToken
 import com.example.highthon.domain.auth.presentation.dto.request.*
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.service.AuthService
@@ -35,7 +36,6 @@ class AuthController(
         req: ChangePasswordRequest
     ): UserProfileResponse = authService.changePassword(req)
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun signup(
@@ -44,9 +44,11 @@ class AuthController(
     ) {
         authService.signup(request)
     }
-}
 
-//    @PostMapping("/reissue")
-//    fun reissueToken(
-//        @RequestBody @Valid
-//    )
+    @PostMapping("/reissue")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun reissue(
+        @RequestBody @Valid
+        request: ReissueRequest
+    ): TokenResponse = authService.reissue(request)
+}

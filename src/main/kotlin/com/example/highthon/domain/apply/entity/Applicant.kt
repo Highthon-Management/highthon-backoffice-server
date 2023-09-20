@@ -1,7 +1,7 @@
 package com.example.highthon.domain.apply.entity
 
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyDetailResponse
-import com.example.highthon.domain.apply.presentaion.dto.response.ApplyListResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantDetailResponse
+import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantListResponse
 import com.example.highthon.domain.user.entity.User
 import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
@@ -60,7 +60,7 @@ class Applicant(
     var bankType: BankType = bankType
         protected set
 
-    fun toResponse() = ApplyDetailResponse(
+    fun toResponse() = ApplicantDetailResponse(
         this.id!!,
         this.user.name,
         this.user.phoneNumber,
@@ -70,10 +70,11 @@ class Applicant(
         this.github,
         this.isCanceled,
         this.reason,
-        String(Base64.getDecoder().decode(this.bankAccount))
+        String(Base64.getDecoder().decode(this.bankAccount)),
+        this.user.role
     )
 
-    fun toMinimumResponse() = ApplyListResponse(
+    fun toMinimumResponse() = ApplicantListResponse(
         this.id!!,
         this.user.name,
         this.user.school,

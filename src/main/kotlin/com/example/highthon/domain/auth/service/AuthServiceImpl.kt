@@ -3,10 +3,7 @@ package com.example.highthon.domain.auth.service
 import com.example.highthon.domain.auth.exception.MessageNotSentYetException
 import com.example.highthon.domain.auth.exception.NumberNotMatchedException
 import com.example.highthon.domain.auth.exception.PasswordNotMatchedException
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePasswordRequest
-import com.example.highthon.domain.auth.presentation.dto.request.ChangePhoneNumberRequest
-import com.example.highthon.domain.auth.presentation.dto.request.LoginRequest
-import com.example.highthon.domain.auth.presentation.dto.request.SignUpRequest
+import com.example.highthon.domain.auth.presentation.dto.request.*
 import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.entity.User
@@ -29,7 +26,7 @@ class AuthServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val qualificationRepository: QualificationRepository,
     private val userFacade: UserFacade,
-    private val smsService: SmsService
+    private val smsService: SmsService,
 ): AuthService {
 
     @Transactional
@@ -48,7 +45,7 @@ class AuthServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)) throw NumberNotMatchedException
+        if (!smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)) throw NumberNotMatchedException
 
         qualificationRepository.deleteById(req.phoneNumber)
 
@@ -58,6 +55,7 @@ class AuthServiceImpl(
             req.phoneNumber,
             user.password,
             user.school,
+            user.grade,
             user.part,
             user.role
         )).toResponse()
@@ -68,16 +66,15 @@ class AuthServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (!smsService.passwordCheck(user, req.number!!)) throw NumberNotMatchedException
-
-        qualificationRepository.deleteById(user.phoneNumber)
+        if (!passwordEncoder.matches(req.oldPassword!!, user.password)) throw PasswordNotMatchedException
 
         return userRepository.save(User(
             user.id,
             user.name,
             user.phoneNumber,
-            passwordEncoder.encode(req.password!!),
+            passwordEncoder.encode(req.newPassword!!),
             user.school,
+            user.grade,
             user.part,
             user.role
         )).toResponse()
@@ -96,11 +93,15 @@ class AuthServiceImpl(
             phoneNumber = request.phoneNumber,
             school = request.school!!,
             password = passwordEncoder.encode(request.password!!),
-            role = Role.USER,
-            part = request.part
+            role = Role.PARTICIPANT,
+            part = request.part,
+            grade = request.grade!!
         ))
 
         qualificationRepository.delete(qualification)
     }
+
+    @Transactional
+    override fun reissue(req: ReissueRequest): TokenResponse = tokenProvider.reissue(req.refreshToken)
 
 }

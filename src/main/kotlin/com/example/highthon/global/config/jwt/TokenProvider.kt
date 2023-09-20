@@ -11,17 +11,19 @@ import com.example.highthon.global.config.security.principal.AuthDetailsService
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import okhttp3.internal.wait
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Component
 class TokenProvider(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val property: TokenProperty,
-    private val authDetailsService: AuthDetailsService,
-    private val jwtTokenResolver: JwtTokenResolver
+    private val authDetailsService: AuthDetailsService
 ) {
 
     private fun generateAccessToken(sub: String): String {
@@ -35,9 +37,11 @@ class TokenProvider(
 
     private fun generateRefreshToken(sub: String): String {
 
-        val oldRedis = refreshTokenRepository.findByPhoneNumber(sub)
+        refreshTokenRepository.findByIdOrNull(sub)?.let {
+                refreshTokenRepository.delete(it)
+            }.apply {
 
-        if (oldRedis != null) refreshTokenRepository.delete(oldRedis)
+        }
 
         val rfToken = Jwts.builder()
             .signWith(SignatureAlgorithm.HS256, property.secretKey)
@@ -77,23 +81,14 @@ class TokenProvider(
         return UsernamePasswordAuthenticationToken(authDetails, "", authDetails.authorities)
     }
 
-    //레디스에서 리프레시 토큰 찾아서 phoneNumber 가져오기
-//    private fun findIdByRefreshToken(refreshToken: String) =
-//        (refreshTokenRepository.findByIdOrNull(refreshToken) ?: throw InvalidTokenException).phoneNumber
-//
-//    //리프레시 토큰으로 토큰 재발급
-//    fun reissueToken(): ResponseEntity<TokenResponse> {
-//        val refreshToken = token.token
-//
-//        if(!validateRefreshToken(refreshToken)) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-//        }
-//
-//        val id = findIdByRefreshToken(refreshToken)
-//
-//        return run {
-//            val tokenResponse = receiveToken(id)
-//            ResponseEntity.ok(tokenResponse)
-//        }
-//    }
+    fun reissue(token: String): TokenResponse{
+        
+        val refreshToken = refreshTokenRepository.findByIdOrNull(token)
+            ?: throw InvalidTokenException
+
+        refreshTokenRepository.delete(refreshToken)
+
+        return receiveToken(refreshToken.phoneNumber)
+    }
+
 }

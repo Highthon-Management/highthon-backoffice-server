@@ -36,7 +36,6 @@ class AuthController(
         req: ChangePasswordRequest
     ): UserProfileResponse = authService.changePassword(req)
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun signup(

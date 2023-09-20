@@ -45,7 +45,7 @@ class AuthServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
-        if (smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)) throw NumberNotMatchedException
+        if (!smsService.phoneNumberCheck(req.phoneNumber!!, req.number!!)) throw NumberNotMatchedException
 
         qualificationRepository.deleteById(req.phoneNumber)
 

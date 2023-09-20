@@ -4,8 +4,6 @@ import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.config.sms.SmsProperty
 import mu.KLogger
-import mu.KotlinLogging
-import net.nurigo.sdk.NurigoApp.initialize
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.model.MessageType
 import net.nurigo.sdk.message.service.DefaultMessageService
@@ -17,10 +15,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class SmsScheduler(
     private val userRepository: UserRepository,
-    private val property: SmsProperty
+    private val property: SmsProperty,
+    private val messageService: DefaultMessageService,
+    private val logger: KLogger
 ) {
-    private val logger: KLogger = KotlinLogging.logger {}
-    private val messageService:DefaultMessageService = initialize(property.apiKey, property.apiSecret, "https://api.coolsms.co.kr")
 
     @Transactional
     @Scheduled(cron = "0 0 8 1 1 ?", zone = "Asia/Seoul") // 추후에 날짜 변경할 것
@@ -66,7 +64,7 @@ class SmsScheduler(
     @Scheduled(cron = "0 0 8 1 1 ?", zone = "Asia/Seoul") // 추후에 날짜 변경할 것
     fun sendMessageToConfirmed() {
 
-        val messageList = userRepository.findAllByRole(Role.CONFIRMED)?.map {
+        val messageList = userRepository.findAllByRole(Role.ADMIN)?.map {
             Message(
                 from = property.sender,
                 to = it.phoneNumber,

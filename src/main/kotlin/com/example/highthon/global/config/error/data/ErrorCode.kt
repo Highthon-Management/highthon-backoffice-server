@@ -11,6 +11,7 @@ enum class ErrorCode(
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
     NUMBER_NOT_MATCHED(HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
     MESSAGE_TYPE_NOT_MATCHED(HttpStatus.BAD_REQUEST, "메세지 타입이 일치하지 않습니다."),
+    PHONE_NUMBER_NOT_EXIST(HttpStatus.BAD_REQUEST, "존재하지 않는 전화번호입니다."),
 
     // 401
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),

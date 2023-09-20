@@ -3,11 +3,12 @@ package com.example.highthon.domain.auth.service
 import com.example.highthon.domain.auth.entity.Qualification
 import com.example.highthon.domain.auth.entity.type.NumberType
 import com.example.highthon.domain.auth.exception.*
-import com.example.highthon.domain.auth.presentation.dto.request.*
+import com.example.highthon.domain.auth.presentation.dto.request.PhoneNumberSmsRequest
+import com.example.highthon.domain.auth.presentation.dto.request.SignUpSmsRequest
 import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.config.sms.SmsProperty
-import net.nurigo.sdk.NurigoApp.initialize
+import mu.KLogger
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.model.MessageType
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest
@@ -23,12 +24,12 @@ import java.util.*
 class SmsServiceImpl(
     private val property: SmsProperty,
     private val qualificationRepository: QualificationRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val messageService: DefaultMessageService,
+    private val logger: KLogger
 ): SmsService {
 
-    private val messageService: DefaultMessageService = initialize(property.apiKey, property.apiSecret, "https://api.coolsms.co.kr")
-
-    private fun sendMessage(phoneNumber: String, text: String, messageType: NumberType, ran: Int): SingleMessageSentResponse? {
+    private fun sendMessage(phoneNumber: String, text: String, messageType: NumberType, ran: Int): SingleMessageSentResponse {
 
         val message = Message(
             from = property.sender,
@@ -38,9 +39,17 @@ class SmsServiceImpl(
             country = "+82"
         )
 
+        var res: SingleMessageSentResponse? = null
+        try {
+            res = messageService.sendOne(SingleMessageSendingRequest(message))
+
+        } catch (e: Exception){
+            logger.error { e.localizedMessage }
+            logger.error { e.stackTrace }
+        }
         qualificationRepository.save(Qualification(phoneNumber, ran, messageType))
 
-        return messageService.sendOne(SingleMessageSendingRequest(message))
+        return res ?: throw PhoneNumberNotExistException
     }
 
     @Transactional

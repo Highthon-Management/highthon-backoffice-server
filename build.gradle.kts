@@ -66,8 +66,10 @@ tasks.withType<KotlinCompile> {
 
 allOpen {
     annotation("javax.persistence.Entity")
+    annotation("org.springframework.data.redis.core.RedisHash")
 }
 
 noArg {
     annotation("javax.persistence.Entity")
+    annotation("org.springframework.data.redis.core.RedisHash")
 }

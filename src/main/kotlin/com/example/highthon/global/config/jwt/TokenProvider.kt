@@ -5,7 +5,7 @@ import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.RefreshTokenRepository
 import com.example.highthon.global.config.error.exception.ExpiredTokenException
 import com.example.highthon.global.config.error.exception.InvalidTokenException
-import com.example.highthon.global.config.jwt.env.TokenProperty
+import com.example.highthon.global.env.jwt.TokenProperty
 import com.example.highthon.global.config.security.principal.AuthDetails
 import com.example.highthon.global.config.security.principal.AuthDetailsService
 import io.jsonwebtoken.ExpiredJwtException
@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.*
 
 @Component
@@ -31,7 +32,7 @@ class TokenProvider(
             .signWith(SignatureAlgorithm.HS256, property.secretKey)
             .setSubject(sub)
             .setIssuedAt(Date())
-            .setExpiration(Date(Date().time + property.accessExp))
+            .setExpiration(Date(Date().time.plus(property.accessExp)))
             .compact()
     }
 
@@ -46,7 +47,7 @@ class TokenProvider(
         val rfToken = Jwts.builder()
             .signWith(SignatureAlgorithm.HS256, property.secretKey)
             .setIssuedAt(Date())
-            .setExpiration(Date(Date().time + property.refreshExp))
+            .setExpiration(Date(Date().time.plus(property.refreshExp)))
             .compact()
 
         refreshTokenRepository.save(RefreshToken(rfToken, sub))
@@ -54,10 +55,14 @@ class TokenProvider(
         return rfToken
     }
 
-    fun receiveToken(accountId: String) = TokenResponse (
-        generateAccessToken(accountId),
-        generateRefreshToken(accountId)
+    fun receiveToken(sub: String) = TokenResponse (
+        generateAccessToken(sub),
+        getExp(property.accessExp),
+        generateRefreshToken(sub),
+        getExp(property.refreshExp)
     )
+
+    private fun getExp(exp: Long) = LocalDateTime.now().withNano(0).plusSeconds(exp / 1000)
 
     private fun getSubject(token: String): String {
         return try {
@@ -85,8 +90,6 @@ class TokenProvider(
         
         val refreshToken = refreshTokenRepository.findByIdOrNull(token)
             ?: throw InvalidTokenException
-
-        refreshTokenRepository.delete(refreshToken)
 
         return receiveToken(refreshToken.phoneNumber)
     }

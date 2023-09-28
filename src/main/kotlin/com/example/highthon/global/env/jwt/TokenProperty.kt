@@ -1,4 +1,4 @@
-package com.example.highthon.global.config.jwt.env
+package com.example.highthon.global.env.jwt
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding

@@ -4,13 +4,11 @@ import com.example.highthon.global.config.error.handler.ExceptionHandlerFilter
 import com.example.highthon.global.config.filter.FilterConfig
 import com.example.highthon.global.config.jwt.JwtTokenResolver
 import com.example.highthon.global.config.jwt.TokenProvider
-import com.example.highthon.global.config.sms.SmsProperty
+import com.example.highthon.global.env.sms.SmsProperty
 import mu.KLogger
 import mu.KotlinLogging
-import net.nurigo.sdk.NurigoApp
 import net.nurigo.sdk.NurigoApp.initialize
 import net.nurigo.sdk.message.service.DefaultMessageService
-import net.nurigo.sdk.message.service.MessageService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -20,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import java.util.*
-import java.util.logging.Logger
 
 @Configuration
 @EnableWebSecurity

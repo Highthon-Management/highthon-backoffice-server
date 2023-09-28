@@ -55,6 +55,9 @@ dependencies {
     // query dsl
     implementation("com.querydsl:querydsl-jpa:5.0.0")
     implementation("com.querydsl:querydsl-apt:5.0.0")
+
+    // aws
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.232")
 }
 
 tasks.withType<KotlinCompile> {
@@ -66,8 +69,10 @@ tasks.withType<KotlinCompile> {
 
 allOpen {
     annotation("javax.persistence.Entity")
+    annotation("org.springframework.data.redis.core.RedisHash")
 }
 
 noArg {
     annotation("javax.persistence.Entity")
+    annotation("org.springframework.data.redis.core.RedisHash")
 }

@@ -1,6 +1,8 @@
 package com.example.highthon.global.config.error.handler
 
+import com.amazonaws.services.s3.model.AmazonS3Exception
 import com.example.highthon.global.config.error.data.BindErrorResponse
+import com.example.highthon.global.config.error.data.ErrorCode
 import com.example.highthon.global.config.error.data.ErrorResponse
 import com.example.highthon.global.config.error.exception.BusinessException
 import org.springframework.core.convert.ConversionFailedException
@@ -44,4 +46,21 @@ class ExceptionHandler {
             ErrorResponse(HttpStatus.BAD_REQUEST, "잘못된 입력입니다."),
             HttpStatus.BAD_REQUEST
         )
+
+    @ExceptionHandler(AmazonS3Exception::class)
+    protected fun handleAmazonS3Exception(e: AmazonS3Exception): ResponseEntity<ErrorResponse> {
+
+        e.printStackTrace()
+
+        return ResponseEntity(
+            ErrorResponse.of(ErrorCode.S3_ERROR),
+            HttpStatus.INTERNAL_SERVER_ERROR
+        )
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException::class)
+    protected fun handleMissingParameterException(e: MissingServletRequestParameterException) = ResponseEntity(
+        mapOf( "cause" to mapOf("filed" to e.parameterName, "message" to e.localizedMessage)),
+        HttpStatus.BAD_REQUEST
+    )
 }

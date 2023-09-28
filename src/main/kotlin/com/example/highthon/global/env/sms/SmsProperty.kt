@@ -1,4 +1,4 @@
-package com.example.highthon.global.config.sms
+package com.example.highthon.global.env.sms
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding

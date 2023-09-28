@@ -4,7 +4,7 @@ import com.example.highthon.global.config.error.handler.ExceptionHandlerFilter
 import com.example.highthon.global.config.filter.FilterConfig
 import com.example.highthon.global.config.jwt.JwtTokenResolver
 import com.example.highthon.global.config.jwt.TokenProvider
-import com.example.highthon.global.config.sms.SmsProperty
+import com.example.highthon.global.env.sms.SmsProperty
 import mu.KLogger
 import mu.KotlinLogging
 import net.nurigo.sdk.NurigoApp.initialize

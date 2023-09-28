@@ -2,7 +2,7 @@ package com.example.highthon.infra.sms
 
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.repository.UserRepository
-import com.example.highthon.global.config.sms.SmsProperty
+import com.example.highthon.global.env.sms.SmsProperty
 import mu.KLogger
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.model.MessageType

@@ -7,7 +7,7 @@ import com.example.highthon.domain.auth.presentation.dto.request.PhoneNumberSmsR
 import com.example.highthon.domain.auth.presentation.dto.request.SignUpSmsRequest
 import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.repository.UserRepository
-import com.example.highthon.global.config.sms.SmsProperty
+import com.example.highthon.global.env.sms.SmsProperty
 import mu.KLogger
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.model.MessageType

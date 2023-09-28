@@ -12,6 +12,9 @@ enum class ErrorCode(
     NUMBER_NOT_MATCHED(HttpStatus.BAD_REQUEST, "인증번호가 일치하지 않습니다."),
     MESSAGE_TYPE_NOT_MATCHED(HttpStatus.BAD_REQUEST, "메세지 타입이 일치하지 않습니다."),
     PHONE_NUMBER_NOT_EXIST(HttpStatus.BAD_REQUEST, "존재하지 않는 전화번호입니다."),
+    INVALID_FILE(HttpStatus.BAD_REQUEST, "지원하지 않는 파일 확장자입니다."),
+    BAD_TEAM_NAME(HttpStatus.BAD_REQUEST, "팀 이름은 \'/\'를 포함할 수 없습니다."),
+    TIMES_UP(HttpStatus.BAD_REQUEST, "제출 기한이 지났습니다."),
 
     // 401
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
@@ -33,4 +36,5 @@ enum class ErrorCode(
 
     // 500
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러"),
+    S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AWS S3가 정상 작동하지 않습니다.")
 }

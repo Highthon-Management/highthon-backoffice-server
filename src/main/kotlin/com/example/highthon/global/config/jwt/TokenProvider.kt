@@ -5,7 +5,7 @@ import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.RefreshTokenRepository
 import com.example.highthon.global.config.error.exception.ExpiredTokenException
 import com.example.highthon.global.config.error.exception.InvalidTokenException
-import com.example.highthon.global.config.jwt.env.TokenProperty
+import com.example.highthon.global.env.jwt.TokenProperty
 import com.example.highthon.global.config.security.principal.AuthDetails
 import com.example.highthon.global.config.security.principal.AuthDetailsService
 import io.jsonwebtoken.ExpiredJwtException

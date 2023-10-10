@@ -39,28 +39,19 @@ class ApplicantController(
     fun cancel(
         @RequestBody @Valid
         req: ApplyCancelRequest
-    ) {
-        applicantService.cancel(req.reason!!)
-    }
+    ) { applicantService.cancel(req.reason!!) }
 
     @GetMapping("/detail")
     fun getApplicantDetail(
         @RequestParam("id") id: UUID
     ): ApplicantDetailResponse = applicantService.getDetail(id)
 
-
-    @GetMapping("/list/{part}")
-    fun getApplicantListByPart(
-        @RequestParam("idx", required = true) idx: Int = 0,
-        @RequestParam("size", required = true) size: Int = 5,
-        @PathVariable("part") part: Part
-    ): Page<ApplicantListResponse> = applicantService.getListByPart(idx, size, part)
-
     @GetMapping("/list")
     fun getApplyList(
         @RequestParam("idx", required = true) idx: Int = 0,
-        @RequestParam("size", required = true) size: Int = 5
-    ): Page<ApplicantListResponse> = applicantService.getListByPart(idx, size)
+        @RequestParam("size", required = true) size: Int = 5,
+        @RequestParam("part", required = false) part: Part? = null
+    ): Page<ApplicantListResponse> = applicantService.getListByPart(idx, size, part)
 
     @GetMapping("/list/cancel")
     fun getCanceledApplicant(

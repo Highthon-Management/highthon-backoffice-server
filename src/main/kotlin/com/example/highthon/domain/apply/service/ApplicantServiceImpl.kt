@@ -1,7 +1,6 @@
 package com.example.highthon.domain.apply.service
 
 import com.example.highthon.domain.apply.entity.Applicant
-import com.example.highthon.domain.user.entity.type.Part
 import com.example.highthon.domain.apply.exception.AlreadyAppliedException
 import com.example.highthon.domain.apply.exception.AlreadyCanceledApplyException
 import com.example.highthon.domain.apply.exception.ApplicantNotFoundException
@@ -11,6 +10,7 @@ import com.example.highthon.domain.apply.presentaion.dto.request.EditApplyReques
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantDetailResponse
 import com.example.highthon.domain.apply.presentaion.dto.response.ApplicantListResponse
 import com.example.highthon.domain.apply.repository.ApplicantRepository
+import com.example.highthon.domain.apply.repository.ApplicantRepositoryCustom
 import com.example.highthon.domain.user.entity.User
 import com.example.highthon.domain.user.entity.type.Role
 import com.example.highthon.domain.user.repository.UserRepository
@@ -30,7 +30,8 @@ class ApplicantServiceImpl(
     private val applicantRepository: ApplicantRepository,
     private val userFacade: UserFacade,
     private val bankEncoder: Encoder,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val customApplicantRepository: ApplicantRepositoryCustom
 ): ApplicantService {
 
     @Transactional
@@ -98,61 +99,22 @@ class ApplicantServiceImpl(
 
         val user = userFacade.getCurrentUser()
 
+        adminChecker(user)
+
         val apply = applicantRepository.findByIdOrNull(id)
             ?: throw ApplicantNotFoundException
 
-        if (user.role != Role.ADMIN && user.id!! != apply.id) throw PermissionDeniedException
+        if (user.id!! != apply.id) throw PermissionDeniedException
 
         return apply.toResponse()
     }
 
-    override fun getListByPart(idx: Int, size: Int, part: Part?): Page<ApplicantListResponse> {
-
-        if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
-
-        return if (part == null) {
-            applicantRepository.findAllByIsCanceledAndUserRole(
-                false,
-                Role.PARTICIPANT,
-                PageRequest.of(
-                    idx,
-                    size,
-                    Sort.by(Sort.Direction.DESC, "createdAt")
-                )
-            ).map {
-                it.toMinimumResponse()
-            }
-        } else {
-            applicantRepository.findAllByAndUserPartAndIsCanceledAndUserRole(
-                part,
-                false,
-                Role.PARTICIPANT,
-                PageRequest.of(
-                    idx,
-                    size,
-                    Sort.by(Sort.Direction.DESC, "createdAt")
-                )
-            ).map {
-                it.toMinimumResponse()
-            }
-        }
-    }
-
     override fun getCanceledList(idx: Int, size: Int): Page<ApplicantListResponse> {
 
-        if (userFacade.getCurrentUser().role != Role.ADMIN) throw PermissionDeniedException
-
-        return applicantRepository.findAllByIsCanceledAndUserRole(
-            true,
-            Role.PARTICIPANT,
-            PageRequest.of(
-                idx,
-                size,
-                Sort.by(Sort.Direction.DESC, "createdAt")
-            )
-        ).map {
-            it.toMinimumResponse()
-        }
+        adminChecker(userFacade.getCurrentUser())
+        
+        return customApplicantRepository
+            .findCanceledAllByUserRole(Role.PARTICIPANT, PageRequest.of(idx, size, Sort.by("createdAt").descending()))
     }
 
     @Transactional
@@ -161,8 +123,9 @@ class ApplicantServiceImpl(
         val applicant = applicantRepository.findByIdOrNull(id)
             ?: throw ApplicantNotFoundException
 
-        if ((userFacade.getCurrentUser().role != Role.ADMIN || applicant.user.role == Role.ADMIN) || //토큰이 어드민이 아니거나, 변경하려는 신청의 권한이 ADMIN인 경우
-            (role != Role.WAITING && role != Role.CONFIRMED)) throw PermissionDeniedException //올바른 권한으로 변경하지 않는 경우
+        adminChecker(userFacade.getCurrentUser())
+
+        if (applicant.user.role == Role.ADMIN || role != Role.WAITING && role != Role.CONFIRMED) throw PermissionDeniedException
 
         userRepository.save(User(
             applicant.user.id,
@@ -176,5 +139,37 @@ class ApplicantServiceImpl(
         ))
 
         return applicant.toResponse()
+    }
+
+    private fun adminChecker(user: User) {
+        if (user.role != Role.ADMIN) throw PermissionDeniedException
+    }
+    override fun getListSortedByPartDESC(idx: Int, size: Int): Page<ApplicantListResponse> {
+        adminChecker(userFacade.getCurrentUser())
+        return customApplicantRepository.findApplicantSortedByPartDESC(PageRequest.of(idx, size, Sort.by("createdAt").descending()))
+    }
+    override fun getListSortedByPartASC(idx: Int, size: Int): Page<ApplicantListResponse> {
+        adminChecker(userFacade.getCurrentUser())
+        return customApplicantRepository.findApplicantSortedByPartASC(PageRequest.of(idx, size, Sort.by("createdAt").descending()))
+    }
+
+    override fun getListSortedByGradeDESC(idx: Int, size: Int): Page<ApplicantListResponse> {
+        adminChecker(userFacade.getCurrentUser())
+        return customApplicantRepository.findApplicantSortedByGradeDESC(PageRequest.of(idx, size, Sort.by("createdAt").descending()))
+    }
+
+    override fun getListSortedByGradeASC(idx: Int, size: Int): Page<ApplicantListResponse> {
+        adminChecker(userFacade.getCurrentUser())
+        return customApplicantRepository.findApplicantSortedByGradeASC(PageRequest.of(idx, size, Sort.by("createdAt").descending()))
+    }
+
+    override fun getListSortedBySchoolDESC(idx: Int, size: Int): Page<ApplicantListResponse> {
+        adminChecker(userFacade.getCurrentUser())
+        return customApplicantRepository.findApplicantSortedBySchoolDESC(PageRequest.of(idx, size, Sort.by("createdAt").descending()))
+    }
+
+    override fun getListSortedBySchoolASC(idx: Int, size: Int): Page<ApplicantListResponse> {
+        adminChecker(userFacade.getCurrentUser())
+        return customApplicantRepository.findApplicantSortedBySchoolASC(PageRequest.of(idx, size, Sort.by("createdAt").descending()))
     }
 }

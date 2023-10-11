@@ -7,5 +7,6 @@ data class ApplicantListResponse(
     val id: UUID,
     val name: String,
     val school: String,
+    val grade: Int,
     val part: Part
 )

@@ -9,6 +9,7 @@ data class ApplicantDetailResponse (
     val name: String,
     val phoneNumber: String,
     val school: String,
+    val grade: Int,
     val motivation: String,
     val part: Part,
     val githubLink: String?,

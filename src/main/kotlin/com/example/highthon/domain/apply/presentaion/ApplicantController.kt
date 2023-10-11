@@ -46,12 +46,41 @@ class ApplicantController(
         @RequestParam("id") id: UUID
     ): ApplicantDetailResponse = applicantService.getDetail(id)
 
-    @GetMapping("/list")
-    fun getApplyList(
+    @GetMapping("/list/sorted/part")
+    fun getApplyListSortByPart(
         @RequestParam("idx", required = true) idx: Int = 0,
         @RequestParam("size", required = true) size: Int = 5,
-        @RequestParam("part", required = false) part: Part? = null
-    ): Page<ApplicantListResponse> = applicantService.getListByPart(idx, size, part)
+    ): Page<ApplicantListResponse> = applicantService.getListSortedByPartDESC(idx, size)
+
+    @GetMapping("/list/reverse/part")
+    fun getApplyListSortByPartReverse(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+    ): Page<ApplicantListResponse> = applicantService.getListSortedByPartASC(idx, size)
+
+    @GetMapping("/list/sorted/school")
+    fun getApplyListSortBySchool(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+    ): Page<ApplicantListResponse> = applicantService.getListSortedBySchoolDESC(idx, size)
+
+    @GetMapping("/list/reverse/school")
+    fun getApplyListSortBySchoolReverse(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+    ): Page<ApplicantListResponse> = applicantService.getListSortedBySchoolASC(idx, size)
+
+    @GetMapping("/list/sorted/grade")
+    fun getApplyListSortByGrade(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+    ): Page<ApplicantListResponse> = applicantService.getListSortedByGradeDESC(idx, size)
+
+    @GetMapping("/list/reverse/grade")
+    fun getApplyListSortByGradeReverse(
+        @RequestParam("idx", required = true) idx: Int = 0,
+        @RequestParam("size", required = true) size: Int = 5,
+    ): Page<ApplicantListResponse> = applicantService.getListSortedByGradeASC(idx, size)
 
     @GetMapping("/list/cancel")
     fun getCanceledApplicant(

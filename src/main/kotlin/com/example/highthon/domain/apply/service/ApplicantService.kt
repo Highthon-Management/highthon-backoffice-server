@@ -19,9 +19,19 @@ interface ApplicantService {
 
     fun getDetail(id: UUID): ApplicantDetailResponse
 
-    fun getListByPart(idx: Int, size: Int, part: Part? = null): Page<ApplicantListResponse>
-
     fun getCanceledList(idx: Int, size: Int): Page<ApplicantListResponse>
 
     fun empowerment(id: UUID, role: Role): ApplicantDetailResponse
+
+    fun getListSortedByPartDESC(idx: Int, size: Int): Page<ApplicantListResponse>
+
+    fun getListSortedByPartASC(idx: Int, size: Int): Page<ApplicantListResponse>
+
+    fun getListSortedByGradeDESC(idx: Int, size: Int): Page<ApplicantListResponse>
+
+    fun getListSortedByGradeASC(idx: Int, size: Int): Page<ApplicantListResponse>
+
+    fun getListSortedBySchoolDESC(idx: Int, size: Int): Page<ApplicantListResponse>
+
+    fun getListSortedBySchoolASC(idx: Int, size: Int): Page<ApplicantListResponse>
 }

@@ -65,6 +65,7 @@ class Applicant(
         this.user.name,
         this.user.phoneNumber,
         this.user.school,
+        this.user.grade,
         this.motivation,
         this.user.part,
         this.github,
@@ -72,12 +73,5 @@ class Applicant(
         this.reason,
         String(Base64.getDecoder().decode(this.bankAccount)),
         this.user.role
-    )
-
-    fun toMinimumResponse() = ApplicantListResponse(
-        this.id!!,
-        this.user.name,
-        this.user.school,
-        this.user.part
     )
 }

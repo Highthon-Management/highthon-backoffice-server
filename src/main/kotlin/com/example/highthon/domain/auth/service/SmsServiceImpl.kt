@@ -54,7 +54,7 @@ class SmsServiceImpl(
             logger.error { e.stackTrace }
         }
 
-        //res ?: throw PhoneNumberNotExistException
+        res ?: throw PhoneNumberNotExistException
 
         qualificationRepository.save(Qualification(phoneNumber, ran, messageType))
 

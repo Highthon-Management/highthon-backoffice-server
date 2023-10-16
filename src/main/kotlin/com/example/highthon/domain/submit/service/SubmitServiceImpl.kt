@@ -75,7 +75,7 @@ class SubmitServiceImpl(
 
         team.takeIf { !it.contains('/') } ?: throw BadTeamNameException
 
-        userFacade.getCurrentUser().takeIf { it.role == Role.PARTICIPANT }
+        userFacade.getCurrentUser().takeIf { it.role == Role.CONFIRMED }
             ?: throw PermissionDeniedException
 
         if (LocalDateTime.now().isAfter(DEAD_LINE)) throw TimeUpException

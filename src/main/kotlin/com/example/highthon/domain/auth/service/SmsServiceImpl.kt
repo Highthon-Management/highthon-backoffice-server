@@ -9,6 +9,7 @@ import com.example.highthon.domain.auth.repository.QualificationRepository
 import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.env.sms.SmsProperty
 import mu.KLogger
+import mu.KotlinLogging
 import net.nurigo.sdk.message.model.Message
 import net.nurigo.sdk.message.model.MessageType
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest
@@ -25,11 +26,14 @@ class SmsServiceImpl(
     private val property: SmsProperty,
     private val qualificationRepository: QualificationRepository,
     private val userRepository: UserRepository,
-    private val messageService: DefaultMessageService,
-    private val logger: KLogger
+    private val messageService: DefaultMessageService
 ): SmsService {
 
-    private fun sendMessage(phoneNumber: String, text: String, messageType: NumberType, ran: Int): SingleMessageSentResponse {
+    private companion object{
+        val logger: KLogger = KotlinLogging.logger {  }
+    }
+
+    protected fun sendMessage(phoneNumber: String, text: String, messageType: NumberType, ran: Int): SingleMessageSentResponse {
 
         val message = Message(
             from = property.sender,
@@ -39,17 +43,32 @@ class SmsServiceImpl(
             country = "+82"
         )
 
+        logger.error { property.sender }
+        println(property.sender)
+
         var res: SingleMessageSentResponse? = null
         try {
             res = messageService.sendOne(SingleMessageSendingRequest(message))
-
         } catch (e: Exception){
             logger.error { e.localizedMessage }
             logger.error { e.stackTrace }
         }
+
+        //res ?: throw PhoneNumberNotExistException
+
         qualificationRepository.save(Qualification(phoneNumber, ran, messageType))
 
-        return res ?: throw PhoneNumberNotExistException
+        return SingleMessageSentResponse(
+            res.groupId,
+            property.sender,
+            res.from,
+            res.type,
+            res.statusMessage,
+            res.country,
+            res.messageId,
+            res.statusCode,
+            res.accountId
+        )
     }
 
     @Transactional

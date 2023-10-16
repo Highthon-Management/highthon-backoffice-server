@@ -5,18 +5,16 @@ import com.example.highthon.domain.auth.presentation.dto.response.TokenResponse
 import com.example.highthon.domain.auth.repository.RefreshTokenRepository
 import com.example.highthon.global.config.error.exception.ExpiredTokenException
 import com.example.highthon.global.config.error.exception.InvalidTokenException
-import com.example.highthon.global.env.jwt.TokenProperty
 import com.example.highthon.global.config.security.principal.AuthDetails
 import com.example.highthon.global.config.security.principal.AuthDetailsService
+import com.example.highthon.global.env.jwt.TokenProperty
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import okhttp3.internal.wait
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 

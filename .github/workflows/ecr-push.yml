@@ -5,8 +5,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  push_to_ecr:
-    runs-on: macos-latest
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -19,35 +19,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: v0.7.0
-
-      - name: Set ENVs
-        id: set-version
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: finance/finance-front/dev
-          version: ${{ steps.set-version.outputs.version }}
-        run: |
-          version=$(jq -r .version package.json)-$(date '+%Y%m%d-%H%M%S')
-          echo "::set-output name=version::$version"
-          echo "::set-output name=tag::$ECR_REGISTRY/$ECR_REPOSITORY:$version"
-          
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          mask-outputs: true
-      #        with:
-      #          username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build, tag, and push image to Amazon ECR
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
-          file: Dockerfile
+          tags: ${{ steps.login-ecr.outputs.registry }}/highthon-backoffice-server:latest
+          file: ./Dockerfile

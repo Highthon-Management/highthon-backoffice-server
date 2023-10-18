@@ -1,6 +1,5 @@
 FROM openjdk:17-jdk as builder
 ARG JAR_FILE=build/libs/**.jar
-ADD ${JAR_FILE} build/libs/app.jar
 ADD ${JAR_FILE} app.jar
 
 FROM openjdk:17-jdk-slim

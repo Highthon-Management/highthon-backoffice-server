@@ -1,8 +1,8 @@
 name: Push to ECR
 
 on:
-  workflow_run:
-    workflows:  [ "Java CI with Gradle" ]
+  push:
+    branches: [ "main" ]
 
 jobs:
   push_to_ecr:

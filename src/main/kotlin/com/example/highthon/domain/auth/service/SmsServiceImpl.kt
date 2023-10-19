@@ -43,9 +43,6 @@ class SmsServiceImpl(
             country = "+82"
         )
 
-        logger.error { property.sender }
-        println(property.sender)
-
         var res: SingleMessageSentResponse? = null
         try {
             res = messageService.sendOne(SingleMessageSendingRequest(message))

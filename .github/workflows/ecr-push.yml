@@ -1,4 +1,4 @@
-name: CD
+name: CI / CD
 
 on:
   push:
@@ -31,21 +31,35 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-#      - name: Build, tag, and push image to Amazon ECR
-#        id: build-image
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-#          IMAGE_TAG: latest
-#        run: |
-#          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-#          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
-        uses:  docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+          ACCESS_EXP: ${{ secrets.ACCESS_EXP }}
+          API_KEY: ${{ secrets.API_KEY }}
+          API_SECRET: ${{ secrets.API_SECRET }}
+          BUCKET: ${{ secrets.BUCKET }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL}}
+          DB_USER: ${{ secrets.DB_USER }}
+          DIRECTORY: ${{ secrets.DIRECTORY }}
+          IAM_ACCESS: ${{ secrets.IAM_ACCESS }}
+          IAM_SECRET: ${{ secrets.IAM_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REFRESH_EXP: ${{ secrets.REFRESH_EXP }}
+          SENDER: ${{ secrets.SENDER }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+        run: |
+          docker buildx build --platform=linux/amd64 -e -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+#      - name: Build, tag, and push image to Amazon ECR
+#        id: build-image
+#        uses:  docker/build-push-action@v3
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest

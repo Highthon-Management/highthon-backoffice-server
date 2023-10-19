@@ -88,7 +88,7 @@ class SmsServiceImpl(
     @Transactional
     override fun sendPhoneNumberMessage(req: PhoneNumberSmsRequest): SingleMessageSentResponse? {
 
-        if (userRepository.existsByPhoneNumber(req.phoneNumber!!)) throw AlreadySignUpException
+        if (!userRepository.existsByPhoneNumber(req.phoneNumber!!)) throw PhoneNumberNotExistException
 
         if (qualificationRepository.existsById(req.phoneNumber)) throw AlreadyPostedMessageException
 

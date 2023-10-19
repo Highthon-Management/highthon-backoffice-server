@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  CI-CD:
     runs-on: ubuntu-latest
 
     steps:
@@ -52,7 +52,7 @@ jobs:
           SENDER: ${{ secrets.SENDER }}
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
         run: |
-          docker buildx build --platform=linux/amd64 -e -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker buildx build --platform=linux/amd64 --build-arg ACCESS_EXP=ACCESS_EXP --build-arg API_KEY=API_KEY --build-arg API_SECRET=$API_SECRET --build-arg BUCKET=$BUCKET --build-arg DB_PASSWORD=$DB_PASSWORD --build-arg DB_URL=$DB_URL --build-arg DB_USER=$DB_USER --build-arg DIRECTORY=$DIRECTORY --build-arg IAM_ACCESS=$IAM_ACCESS --build-arg IAM_SECRET=$IAM_SECRET --build-arg JWT_SECRET=$JWT_SECRET --build-arg REFRESH_EXP=$REFRESH_EXP --build-arg SENDER=$SENDER --build-arg REDIS_HOST=$REDIS_HOST -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 

@@ -41,3 +41,6 @@ out/
 
 ### Docker Compose ###
 Docker-compose.yml
+
+### env ###
+.env

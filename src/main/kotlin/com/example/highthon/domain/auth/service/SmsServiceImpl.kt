@@ -6,6 +6,7 @@ import com.example.highthon.domain.auth.exception.*
 import com.example.highthon.domain.auth.presentation.dto.request.PhoneNumberSmsRequest
 import com.example.highthon.domain.auth.presentation.dto.request.SignUpSmsRequest
 import com.example.highthon.domain.auth.repository.QualificationRepository
+import com.example.highthon.domain.user.exception.UserNotFoundException
 import com.example.highthon.domain.user.repository.UserRepository
 import com.example.highthon.global.env.sms.SmsProperty
 import mu.KLogger
@@ -88,7 +89,7 @@ class SmsServiceImpl(
     @Transactional
     override fun sendPhoneNumberMessage(req: PhoneNumberSmsRequest): SingleMessageSentResponse? {
 
-        if (!userRepository.existsByPhoneNumber(req.phoneNumber!!)) throw PhoneNumberNotExistException
+        if (!userRepository.existsByPhoneNumber(req.phoneNumber!!)) throw UserNotFoundException
 
         if (qualificationRepository.existsById(req.phoneNumber)) throw AlreadyPostedMessageException
 

@@ -1,4 +1,3 @@
-import com.ewerk.gradle.plugins.tasks.QuerydslCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
